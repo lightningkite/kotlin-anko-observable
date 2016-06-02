@@ -1,6 +1,7 @@
 package com.ivieleague.kotlin.anko.observable
 
 import android.view.View
+import com.ivieleague.kotlin.anko.isAttachedToWindowCompat
 import com.ivieleague.kotlin.lifecycle.LifecycleConnectable
 import com.ivieleague.kotlin.lifecycle.LifecycleListener
 
@@ -14,6 +15,9 @@ object ViewLifecycleConnecter : LifecycleConnectable {
     var view: View? = null
 
     override fun connect(listener: LifecycleListener) {
+        if (view?.isAttachedToWindowCompat() ?: false) {
+            listener.onStart()
+        }
         view?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View?) {
                 listener.onStart()
