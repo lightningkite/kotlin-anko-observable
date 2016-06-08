@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.ViewManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import com.ivieleague.kotlin.anko.*
 import com.ivieleague.kotlin.observable.property.MutableObservableProperty
 import com.ivieleague.kotlin.observable.property.StandardObservableProperty
@@ -239,24 +240,22 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         return makeField(label, maker)
     }
 
-    inline fun ViewGroup.switchLayout(observable: MutableObservableProperty<Boolean>, label: Int) {
-        linearLayout {
-            formPadding()
-            minimumHeight = defaultMinimumHeight
-            gravity = Gravity.CENTER
+    inline fun ViewGroup.switchLayout(observable: MutableObservableProperty<Boolean>, label: Int): LinearLayout = linearLayout {
+        formPadding()
+        minimumHeight = defaultMinimumHeight
+        gravity = Gravity.CENTER
 
-            textView(label).lparams(0, wrapContent, 1f)
+        textView(label).lparams(0, wrapContent, 1f)
 
-            val s = switch() {
-                bindBoolean(observable)
-            }
-
-            backgroundResource = selectableItemBackgroundResource
-            onClick {
-                s.toggle()
-            }
-
+        val s = switch() {
+            bindBoolean(observable)
         }
+
+        backgroundResource = selectableItemBackgroundResource
+        onClick {
+            s.toggle()
+        }
+
     }
 
     inline fun ViewGroup.submit(text: Int, setup: ProgressButton.() -> Unit) = formProgressButton(text) {
