@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = "com.github.lightningkite"
 
 android {
     compileSdkVersion 23
@@ -38,8 +41,18 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile project(':kotlin-observable')
-    compile project(':kotlin-anko')
+    compile "com.github.lightningkite:kotlin-observable:publish-SNAPSHOT"
+    compile "com.github.lightningkite:kotlin-anko:publish-SNAPSHOT"
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
 }
 
 buildscript {
