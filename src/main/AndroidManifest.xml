@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ivieleague.kotlin.anko.observable">
+    package="com.lightningkite.kotlin.anko.observable">
 
     <application
         android:allowBackup="true"
