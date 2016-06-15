@@ -37,7 +37,6 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
 
     var makeField: ViewGroup.(hint: Int, innerViewMaker: ViewGroup.() -> View) -> View = { hint, innerViewMaker ->
         linearLayout {
-            formPadding()
             minimumHeight = defaultMinimumHeight
             gravity = Gravity.CENTER
 
@@ -49,7 +48,6 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
 
     var makeTextField: ViewGroup.(hint: Int, editTextSetup: EditText.() -> Unit) -> View = { hint, editTextSetup ->
         textInputLayout {
-            formPadding()
             hintResource = hint
             textInputEditText {
                 editTextSetup()
@@ -63,10 +61,6 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
                 hintResource = hint
                 styleTextField()
                 editTextSetup()
-            }.apply {
-                layoutParams = (layoutParams as MarginLayoutParams).apply {
-                    formMargins()
-                }
             }
         }
     }
@@ -74,9 +68,8 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
     inline fun materialStyle(crossinline editTextStyle: TextInputEditText.() -> Unit, crossinline inputLayoutStyle: TextInputLayout.() -> Unit) {
         makeTextField = { hint, editTextSetup ->
             textInputLayout {
-                formPadding()
                 hintResource = hint
-                textInputEditText {
+                val et = textInputEditText {
                     editTextStyle()
                     editTextSetup()
                 }
@@ -107,6 +100,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
     override fun generateDefaultLayoutParams(): LayoutParams? {
         return super.generateDefaultLayoutParams().apply {
             width = matchParent
+            formMargins()
         }
     }
 
@@ -180,6 +174,19 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
             setup()
         }
     }
+
+    inline fun ViewGroup.fieldNonEmptyString(obs: MutableObservableProperty<String>, hint: Int, type: Int, blankError: Int) = fieldString(
+            obs,
+            hint,
+            type,
+            {
+                lifecycle.bind(obs) {
+                    formErrorResource =
+                            if (it.isBlank()) blankError
+                            else null
+                }
+            }
+    )
 
     inline fun ViewGroup.email(obs: MutableObservableProperty<String>, hint: Int, blankError: Int, notEmailError: Int) = fieldString(
             obs,
@@ -256,7 +263,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
             s.toggle()
         }
 
-    }
+    }.lparams(matchParent, wrapContent)
 
     inline fun ViewGroup.submit(text: Int, setup: ProgressButton.() -> Unit) = formProgressButton(text) {
         lifecycle.bind(isPassingObs) {
@@ -270,14 +277,12 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         button.minimumHeight = defaultMinimumHeight
         button.buttonStyle()
         setup()
-    }
+    }.lparams(matchParent, wrapContent)
 
     inline fun _LinearLayout.formButton(text: Int, setup: Button.() -> Unit): Button = button(text) {
         minimumHeight = defaultMinimumHeight
         buttonStyle()
         setup()
-    }.lparams(matchParent, wrapContent) {
-        formMargins()
     }
 }
 
