@@ -1,14 +1,14 @@
-package com.ivieleague.kotlin.anko.observable.adapter
+package com.lightningkite.kotlin.anko.observable.adapter
 
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.Spinner
-import com.ivieleague.kotlin.anko.observable.lifecycle
-import com.ivieleague.kotlin.observable.property.ObservableProperty
-import com.ivieleague.kotlin.observable.property.StandardObservableProperty
-import com.ivieleague.kotlin.observable.property.bind
+import com.lightningkite.kotlin.anko.observable.lifecycle
+import com.lightningkite.kotlin.observable.property.ObservableProperty
+import com.lightningkite.kotlin.observable.property.StandardObservableProperty
+import com.lightningkite.kotlin.observable.property.bind
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.wrapContent
 

@@ -1,10 +1,10 @@
-package com.ivieleague.kotlin.anko.observable
+package com.lightningkite.kotlin.anko.observable
 
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
-import com.ivieleague.kotlin.observable.property.MutableObservableProperty
-import com.ivieleague.kotlin.observable.property.bind
+import com.lightningkite.kotlin.observable.property.MutableObservableProperty
+import com.lightningkite.kotlin.observable.property.bind
 import org.jetbrains.anko.onItemSelectedListener
 
 /**

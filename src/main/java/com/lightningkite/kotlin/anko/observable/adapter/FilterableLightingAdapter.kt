@@ -1,4 +1,4 @@
-package com.ivieleague.kotlin.anko.observable.adapter
+package com.lightningkite.kotlin.anko.observable.adapter
 
 import android.view.View
 import android.view.ViewGroup

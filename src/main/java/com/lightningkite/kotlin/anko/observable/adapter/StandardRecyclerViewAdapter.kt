@@ -1,17 +1,17 @@
-package com.ivieleague.kotlin.anko.observable.adapter
+package com.lightningkite.kotlin.anko.observable.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import com.ivieleague.kotlin.anko.observable.lifecycle
-import com.ivieleague.kotlin.lifecycle.listen
-import com.ivieleague.kotlin.observable.list.ObservableList
-import com.ivieleague.kotlin.observable.list.ObservableListListenerSet
-import com.ivieleague.kotlin.observable.list.addListenerSet
-import com.ivieleague.kotlin.observable.list.removeListenerSet
-import com.ivieleague.kotlin.observable.property.ObservableProperty
-import com.ivieleague.kotlin.observable.property.ObservablePropertyBase
+import com.lightningkite.kotlin.anko.observable.lifecycle
+import com.lightningkite.kotlin.lifecycle.listen
+import com.lightningkite.kotlin.observable.list.ObservableList
+import com.lightningkite.kotlin.observable.list.ObservableListListenerSet
+import com.lightningkite.kotlin.observable.list.addListenerSet
+import com.lightningkite.kotlin.observable.list.removeListenerSet
+import com.lightningkite.kotlin.observable.property.ObservableProperty
+import com.lightningkite.kotlin.observable.property.ObservablePropertyBase
 import org.jetbrains.anko.AnkoContextImpl
 import java.util.*
 

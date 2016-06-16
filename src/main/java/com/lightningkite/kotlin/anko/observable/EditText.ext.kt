@@ -1,9 +1,9 @@
-package com.ivieleague.kotlin.anko.observable
+package com.lightningkite.kotlin.anko.observable
 
 import android.text.InputType
 import android.widget.EditText
-import com.ivieleague.kotlin.observable.property.MutableObservableProperty
-import com.ivieleague.kotlin.observable.property.bind
+import com.lightningkite.kotlin.observable.property.MutableObservableProperty
+import com.lightningkite.kotlin.observable.property.bind
 import org.jetbrains.anko.opaque
 import org.jetbrains.anko.textChangedListener
 import org.jetbrains.anko.textColor

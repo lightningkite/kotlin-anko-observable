@@ -1,8 +1,8 @@
-package com.ivieleague.kotlin.anko.observable
+package com.lightningkite.kotlin.anko.observable
 
 import android.widget.TextView
-import com.ivieleague.kotlin.observable.property.MutableObservableProperty
-import com.ivieleague.kotlin.observable.property.bind
+import com.lightningkite.kotlin.observable.property.MutableObservableProperty
+import com.lightningkite.kotlin.observable.property.bind
 
 /**
  * Makes this [TextView] display the value of the bond.

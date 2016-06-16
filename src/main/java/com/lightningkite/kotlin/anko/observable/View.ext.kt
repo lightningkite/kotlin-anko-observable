@@ -1,9 +1,9 @@
-package com.ivieleague.kotlin.anko.observable
+package com.lightningkite.kotlin.anko.observable
 
 import android.view.View
-import com.ivieleague.kotlin.anko.isAttachedToWindowCompat
-import com.ivieleague.kotlin.lifecycle.LifecycleConnectable
-import com.ivieleague.kotlin.lifecycle.LifecycleListener
+import com.lightningkite.kotlin.anko.isAttachedToWindowCompat
+import com.lightningkite.kotlin.lifecycle.LifecycleConnectable
+import com.lightningkite.kotlin.lifecycle.LifecycleListener
 
 /**
  * Various extension functions to support bonds.
