@@ -175,18 +175,67 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         }
     }
 
+    inline fun ViewGroup.fieldString(
+            obs: MutableObservableProperty<String>,
+            hint: Int,
+            type: Int,
+            validations: List<Pair<Int, (String) -> Boolean>> = listOf(),
+            crossinline setup: EditText.() -> Unit
+    ): View {
+        return makeTextField(hint) {
+            bindString(obs)
+            inputType = type
+            setup()
+            lifecycle.bind(obs) {
+                for ((res, validation) in validations) {
+                    if (validation(it)) {
+                        formErrorResource = res
+                        return@bind
+                    }
+                }
+                formErrorResource = null
+            }
+        }
+    }
+
+    inline fun ViewGroup.fieldString(
+            obs: MutableObservableProperty<String>,
+            hint: Int,
+            type: Int,
+            validations: List<Pair<Int, (String) -> Boolean>> = listOf()
+    ): View {
+        return makeTextField(hint) {
+            bindString(obs)
+            inputType = type
+            lifecycle.bind(obs) {
+                for ((res, validation) in validations) {
+                    if (validation(it)) {
+                        formErrorResource = res
+                        return@bind
+                    }
+                }
+                formErrorResource = null
+            }
+        }
+    }
+
+    inline fun ViewGroup.fieldString(
+            obs: MutableObservableProperty<String>,
+            hint: Int,
+            type: Int
+    ): View {
+        return makeTextField(hint) {
+            bindString(obs)
+            inputType = type
+        }
+    }
+
     inline fun ViewGroup.fieldNonEmptyString(obs: MutableObservableProperty<String>, hint: Int, type: Int, blankError: Int) = fieldString(
             obs,
             hint,
             type,
-            {
-                lifecycle.bind(obs) {
-                    formErrorResource =
-                            if (it.isBlank()) blankError
-                            else null
-                }
-            }
-    )
+            listOf(blankError to { it: String -> it.isBlank() })
+    ) {}
 
     inline fun ViewGroup.email(obs: MutableObservableProperty<String>, hint: Int, blankError: Int, notEmailError: Int) = fieldString(
             obs,
@@ -279,10 +328,31 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         setup()
     }.lparams(matchParent, wrapContent)
 
-    inline fun _LinearLayout.formButton(text: Int, setup: Button.() -> Unit): Button = button(text) {
+    inline fun ViewGroup.formButton(setup: Button.() -> Unit): Button = button() {
         minimumHeight = defaultMinimumHeight
         buttonStyle()
         setup()
+    }
+
+    inline fun ViewGroup.formButton(text: Int, setup: Button.() -> Unit): Button = button(text) {
+        minimumHeight = defaultMinimumHeight
+        buttonStyle()
+        setup()
+    }
+
+    inline fun layoutCancelSave(crossinline cancelSetup: Button.() -> Unit, crossinline saveSetup: Button.() -> Unit) {
+        linearLayout {
+            formButton() {
+                cancelSetup()
+            }.lparams(0, wrapContent, 1f) { margin = dip(4) }
+
+            formButton() {
+                lifecycle.bind(isPassingObs) {
+                    isEnabled = it
+                }
+                saveSetup()
+            }.lparams(0, wrapContent, 1f) { margin = dip(4) }
+        }
     }
 }
 
