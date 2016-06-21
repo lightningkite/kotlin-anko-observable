@@ -314,14 +314,28 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
 
     }.lparams(matchParent, wrapContent)
 
-    inline fun ViewGroup.submit(text: Int, setup: ProgressButton.() -> Unit) = formProgressButton(text) {
+    inline fun ViewGroup.submit(text: Int, showFailReason: Boolean = true, setup: ProgressButton.() -> Unit) = formProgressButton(text) {
         lifecycle.bind(isPassingObs) {
             button.isEnabled = it
+        }
+        if (showFailReason) {
+            onDisabledClick {
+                if (!isPassingObs.value) {
+                    snackbar(errors.values.first()!!)
+                }
+            }
         }
         setup()
     }
 
     inline fun ViewGroup.formProgressButton(text: Int, setup: ProgressButton.() -> Unit) = progressButton(text) {
+        button.lparams(matchParent, matchParent) { formMargins() }
+        button.minimumHeight = defaultMinimumHeight
+        button.buttonStyle()
+        setup()
+    }.lparams(matchParent, wrapContent)
+
+    inline fun ViewGroup.formProgressButton(setup: ProgressButton.() -> Unit) = progressButton() {
         button.lparams(matchParent, matchParent) { formMargins() }
         button.minimumHeight = defaultMinimumHeight
         button.buttonStyle()
@@ -344,15 +358,44 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         linearLayout {
             formButton() {
                 cancelSetup()
-            }.lparams(0, wrapContent, 1f) { margin = dip(4) }
+            }.lparams(0, wrapContent, 1f) {
+                formMargins()
+            }
 
             formButton() {
                 lifecycle.bind(isPassingObs) {
                     isEnabled = it
                 }
                 saveSetup()
-            }.lparams(0, wrapContent, 1f) { margin = dip(4) }
-        }
+            }.lparams(0, wrapContent, 1f) {
+                formMargins()
+            }
+        }.lparams(matchParent, wrapContent)
+    }
+
+    inline fun layoutCancelSaveProgress(showFailReason: Boolean = true, crossinline cancelSetup: Button.() -> Unit, crossinline saveSetup: ProgressButton.() -> Unit) {
+        linearLayout {
+            formButton() {
+                cancelSetup()
+            }.lparams(0, wrapContent, 1f) {
+                formMargins()
+            }
+
+            formProgressButton() {
+                button.lparamsMod { formMargins() }
+                lifecycle.bind(isPassingObs) {
+                    button.isEnabled = it
+                }
+                if (showFailReason) {
+                    onDisabledClick {
+                        if (!isPassingObs.value) {
+                            snackbar(errors.values.first()!!)
+                        }
+                    }
+                }
+                saveSetup()
+            }.lparams(0, wrapContent, 1f)
+        }.lparams(matchParent, wrapContent)
     }
 }
 
