@@ -11,6 +11,7 @@ import android.view.ViewManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.lightningkite.kotlin.anko.*
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.StandardObservableProperty
@@ -35,14 +36,11 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
     var defaultHorizontalPadding = dip(16)
     var defaultVerticalPadding = dip(8)
 
-    var makeField: ViewGroup.(hint: Int, innerViewMaker: ViewGroup.() -> View) -> View = { hint, innerViewMaker ->
-        linearLayout {
-            minimumHeight = defaultMinimumHeight
-            gravity = Gravity.CENTER
-
-            textView(hint).lparams(0, wrapContent, 1f)
-
-            innerViewMaker()
+    var makeField: ViewGroup.(hint: Int, innerViewMaker: ViewGroup.() -> View) -> View = { hint, builder ->
+        verticalLayout {
+            gravity = Gravity.CENTER_VERTICAL
+            textView(hint).lparams(matchParent, wrapContent)
+            builder().lparams(matchParent, wrapContent)
         }
     }
 
@@ -51,6 +49,16 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
             hintResource = hint
             textInputEditText {
                 editTextSetup()
+            }
+        }
+    }
+
+    inline fun defaultSpecialFieldStyle(crossinline styleHintText: TextView.() -> Unit) {
+        makeField = { hint, builder ->
+            verticalLayout {
+                gravity = Gravity.CENTER_VERTICAL
+                textView(hint) { styleHintText() }.lparams(matchParent, wrapContent)
+                builder().lparams(matchParent, wrapContent)
             }
         }
     }
@@ -377,12 +385,12 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         linearLayout {
             formButton() {
                 cancelSetup()
-            }.lparams(0, wrapContent, 1f) {
-                formMargins()
-            }
+            }.lparams(0, wrapContent, 1f)
+
+            space().lparams(dip(16), dip(16))
 
             formProgressButton() {
-                button.lparamsMod { formMargins() }
+                button.lparamsMod { margin = 0 }
                 lifecycle.bind(isPassingObs) {
                     button.isEnabled = it
                 }
@@ -395,7 +403,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
                 }
                 saveSetup()
             }.lparams(0, wrapContent, 1f)
-        }.lparams(matchParent, wrapContent)
+        }
     }
 }
 

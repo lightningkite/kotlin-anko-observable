@@ -40,7 +40,6 @@ inline fun <T> Spinner.bindList(bond: MutableObservableProperty<T>, list: List<T
         }
     }
     lifecycle.bind(bond) {
-        if (it == null) return@bind
         val index = list.indexOf(it)
         if (index == -1) return@bind
         setSelection(index)
@@ -55,7 +54,6 @@ inline fun <T, E> Spinner.bindList(bond: MutableObservableProperty<T>, list: Lis
         }
     }
     lifecycle.bind(bond) {
-        if (it == null) return@bind
         val index = list.indexOfFirst { item -> it == conversion(item) }
         if (index == -1) return@bind
         setSelection(index)
