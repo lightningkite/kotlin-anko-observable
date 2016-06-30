@@ -77,7 +77,9 @@ class StandardRecyclerViewAdapter<T>(
         if (itemCount > 0 && position + 1 == itemCount) {
             onScrollToBottom?.invoke()
         }
-        holder.observable.update()
+        if (list.isNotEmpty()) {
+            holder.observable.update()
+        }
     }
 
 

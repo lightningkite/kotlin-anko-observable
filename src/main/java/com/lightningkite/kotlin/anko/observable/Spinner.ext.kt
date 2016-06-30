@@ -3,6 +3,7 @@ package com.lightningkite.kotlin.anko.observable
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
+import com.lightningkite.kotlin.observable.list.ObservableList
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
 import org.jetbrains.anko.onItemSelectedListener
@@ -54,6 +55,35 @@ inline fun <T, E> Spinner.bindList(bond: MutableObservableProperty<T>, list: Lis
         }
     }
     lifecycle.bind(bond) {
+        val index = list.indexOfFirst { item -> it == conversion(item) }
+        if (index == -1) return@bind
+        setSelection(index)
+    }
+}
+
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> Spinner.bindList(bond: MutableObservableProperty<T>, list: ObservableList<T>) {
+    this.onItemSelectedListener {
+        onItemSelected { adapterView, view, index, id ->
+            bond.value = (list[index])
+        }
+    }
+    lifecycle.bind(bond, list.onUpdate) { it, list ->
+        val index = list.indexOf(it)
+        if (index == -1) return@bind
+        setSelection(index)
+    }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T, E> Spinner.bindList(bond: MutableObservableProperty<T>, list: ObservableList<E>, crossinline conversion: (E) -> T) {
+    this.onItemSelectedListener {
+        onItemSelected { adapterView, view, index, id ->
+            bond.value = (conversion(list[index]))
+        }
+    }
+    lifecycle.bind(bond, list.onUpdate) { it, list ->
         val index = list.indexOfFirst { item -> it == conversion(item) }
         if (index == -1) return@bind
         setSelection(index)

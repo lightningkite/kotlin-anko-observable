@@ -53,6 +53,10 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         }
     }
 
+    var showFailure: View.(failure: String) -> Unit = {
+        snackbar(it)
+    }
+
     inline fun defaultSpecialFieldStyle(crossinline styleHintText: TextView.() -> Unit) {
         makeField = { hint, builder ->
             verticalLayout {
@@ -309,10 +313,16 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         minimumHeight = defaultMinimumHeight
         gravity = Gravity.CENTER
 
-        textView(label).lparams(0, wrapContent, 1f)
+        textView(label).lparams(0, wrapContent, 1f) {
+            leftMargin = defaultHorizontalPadding
+            rightMargin = defaultHorizontalPadding / 2
+        }
 
         val s = switch() {
             bindBoolean(observable)
+        }.lparamsMod {
+            leftMargin = defaultHorizontalPadding / 2
+            rightMargin = defaultHorizontalPadding
         }
 
         backgroundResource = selectableItemBackgroundResource
@@ -329,7 +339,8 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         if (showFailReason) {
             onDisabledClick {
                 if (!isPassingObs.value) {
-                    snackbar(errors.values.first()!!)
+                    val failure = errors.values.firstOrNull { it != null }?.toString() ?: "UNKNOWN ERROR"
+                    showFailure(failure)
                 }
             }
         }
@@ -397,7 +408,8 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
                 if (showFailReason) {
                     onDisabledClick {
                         if (!isPassingObs.value) {
-                            snackbar(errors.values.first()!!)
+                            val failure = errors.values.firstOrNull { it != null }?.toString() ?: "UNKNOWN ERROR"
+                            showFailure(failure)
                         }
                     }
                 }

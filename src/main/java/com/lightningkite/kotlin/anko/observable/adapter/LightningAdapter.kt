@@ -2,6 +2,7 @@ package com.lightningkite.kotlin.anko.observable.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.Spinner
@@ -42,7 +43,7 @@ open class LightningAdapter<T>(list: List<T>, val makeView: (ItemObservable<T>) 
             val newView = makeView(newObs)
             newView.tag = newObs
             newObs.index = position
-            newView.layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
+            newView.layoutParams = AbsListView.LayoutParams(matchParent, wrapContent)
             return newView
         } else {
             val obs = convertView.tag as ItemObservable<T>
