@@ -111,11 +111,11 @@ inline fun <T, A : T> CompoundButton.bindValue(bond: MutableObservableProperty<T
 }
 
 
-inline fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T) {
+fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T) {
     this.onCheckedChange {
         buttonView: CompoundButton?, isChecked: Boolean ->
 
-        val index = list.indexOfFirst { it == item }
+        val index = list.indexOf(item)
         if (isChecked != (index != -1)) {
             if (index != -1) {
                 list.removeAt(index)
@@ -125,9 +125,9 @@ inline fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T) {
         }
     }
     lifecycle.bind(list) {
-        val index = list.indexOfFirst { it == item }
-        if (isChecked != (index != -1)) {
-            isChecked = (index != -1);
+        val contained = list.contains(item)
+        if (isChecked != contained) {
+            isChecked = contained;
         }
     }
 }

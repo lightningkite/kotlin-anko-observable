@@ -7,6 +7,8 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.Spinner
 import com.lightningkite.kotlin.anko.observable.lifecycle
+import com.lightningkite.kotlin.lifecycle.listen
+import com.lightningkite.kotlin.observable.list.ObservableList
 import com.lightningkite.kotlin.observable.property.ObservableProperty
 import com.lightningkite.kotlin.observable.property.StandardObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
@@ -72,5 +74,23 @@ fun <T> ListView.makeAdapter(list: List<T>, makeView: (LightningAdapter.ItemObse
 fun <T> Spinner.makeAdapter(list: List<T>, makeView: (LightningAdapter.ItemObservable<T>) -> View): LightningAdapter<T> {
     val result = LightningAdapter(list, makeView)
     adapter = result
+    return result
+}
+
+fun <T> ListView.makeAdapter(list: ObservableList<T>, makeView: (LightningAdapter.ItemObservable<T>) -> View): LightningAdapter<T> {
+    val result = LightningAdapter(list, makeView)
+    adapter = result
+    lifecycle.listen(list.onUpdate) {
+        result.notifyDataSetChanged()
+    }
+    return result
+}
+
+fun <T> Spinner.makeAdapter(list: ObservableList<T>, makeView: (LightningAdapter.ItemObservable<T>) -> View): LightningAdapter<T> {
+    val result = LightningAdapter(list, makeView)
+    adapter = result
+    lifecycle.listen(list.onUpdate) {
+        result.notifyDataSetChanged()
+    }
     return result
 }
