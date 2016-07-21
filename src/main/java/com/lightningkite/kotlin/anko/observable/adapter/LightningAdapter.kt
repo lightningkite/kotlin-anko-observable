@@ -6,7 +6,7 @@ import android.widget.AbsListView
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.Spinner
-import com.lightningkite.kotlin.anko.observable.lifecycle
+import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.lifecycle.listen
 import com.lightningkite.kotlin.observable.list.ObservableList
 import com.lightningkite.kotlin.observable.property.ObservableProperty

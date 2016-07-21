@@ -3,6 +3,7 @@ package com.lightningkite.kotlin.anko.observable
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
+import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.observable.list.ObservableList
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.bind

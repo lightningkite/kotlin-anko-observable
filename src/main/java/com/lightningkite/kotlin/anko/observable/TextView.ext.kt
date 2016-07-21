@@ -1,6 +1,7 @@
 package com.lightningkite.kotlin.anko.observable
 
 import android.widget.TextView
+import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.observable.property.ObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
 

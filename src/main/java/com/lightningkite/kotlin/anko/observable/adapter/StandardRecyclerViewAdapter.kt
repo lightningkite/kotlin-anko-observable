@@ -4,7 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import com.lightningkite.kotlin.anko.observable.lifecycle
+import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.lifecycle.listen
 import com.lightningkite.kotlin.observable.list.ObservableList
 import com.lightningkite.kotlin.observable.list.ObservableListListenerSet

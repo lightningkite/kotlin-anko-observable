@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.lightningkite.kotlin.anko.animation.TransitionView
 import com.lightningkite.kotlin.anko.animation.transitionView
+import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.StandardObservableProperty
 import com.lightningkite.kotlin.observable.property.bind

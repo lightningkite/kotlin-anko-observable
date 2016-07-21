@@ -2,6 +2,7 @@ package com.lightningkite.kotlin.anko.observable
 
 import android.text.InputType
 import android.widget.EditText
+import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
 import org.jetbrains.anko.opaque

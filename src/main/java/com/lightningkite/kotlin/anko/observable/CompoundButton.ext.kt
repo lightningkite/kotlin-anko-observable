@@ -1,6 +1,7 @@
 package com.lightningkite.kotlin.anko.observable
 
 import android.widget.CompoundButton
+import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.observable.list.ObservableList
 import com.lightningkite.kotlin.observable.list.bind
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
