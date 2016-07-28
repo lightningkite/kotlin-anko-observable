@@ -13,6 +13,7 @@ class FilterableLightningAdapter<T>(
         val fullList: List<T>,
         val matches: T.(CharSequence) -> Boolean,
         val mutableList: MutableList<T> = mutableListOf(),
+        val convertToString: (T) -> String = { it.toString() },
         makeView: (ItemObservable<T>) -> View
 ) : LightningAdapter<T>(mutableList, makeView), Filterable {
 
@@ -42,6 +43,9 @@ class FilterableLightningAdapter<T>(
             }
         }
 
+        override fun convertResultToString(resultValue: Any?): CharSequence {
+            return convertToString(resultValue as T)
+        }
     }
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View? = getView(position, convertView, parent)
