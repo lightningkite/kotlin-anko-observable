@@ -26,6 +26,7 @@ import java.util.*
 /**
  * Created by jivie on 3/15/16.
  */
+@Deprecated("Instead of using a FormLayout, use standard layouts instead and then use a collection of Validations to validate.")
 class FormLayout(ctx: Context) : _LinearLayout(ctx) {
 
     init {
@@ -419,4 +420,5 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
     }
 }
 
+@Deprecated("Instead of using a FormLayout, use standard layouts instead and then use a collection of Validations to validate.")
 inline fun ViewManager.formLayout(init: FormLayout.() -> Unit) = ankoView({ FormLayout(it) }, init)
