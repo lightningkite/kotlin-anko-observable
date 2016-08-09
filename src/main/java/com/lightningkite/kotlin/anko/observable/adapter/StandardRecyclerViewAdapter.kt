@@ -26,6 +26,7 @@ class StandardRecyclerViewAdapter<T>(
         val makeView: SRVAContext<T>.(ItemObservable<T>) -> Unit
 ) : RecyclerView.Adapter<StandardRecyclerViewAdapter.ViewHolder<T>>() {
 
+
     var list: List<T> = initialList
         set(value) {
             field = value
@@ -64,7 +65,13 @@ class StandardRecyclerViewAdapter<T>(
 
     override fun getItemCount(): Int = list.size
 
+    var default: T? = null
+    var shouldSetDefault = true
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<T>? {
+        if (shouldSetDefault) {
+            default = list.first()
+            shouldSetDefault = false
+        }
         val observable = ItemObservable(this)
         itemObservables.add(observable)
         val newView = SRVAContext(this, context).apply { makeView(observable) }.view
@@ -93,7 +100,7 @@ class StandardRecyclerViewAdapter<T>(
             get() {
                 if (position >= 0 && position < parent.list.size) {
                     return parent.list[position]
-                } else return parent.list.first()
+                } else return parent.default as T
             }
             set(value) {
                 if (position < 0 || position >= parent.list.size) return
