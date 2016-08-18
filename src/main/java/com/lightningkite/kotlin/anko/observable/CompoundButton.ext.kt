@@ -61,6 +61,23 @@ inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean>) 
     }
 }
 
+@Suppress("NOTHING_TO_INLINE")
+@JvmName("bindBooleanOptional")
+inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean?>, default: Boolean = false) {
+    this.onCheckedChange {
+        buttonView: CompoundButton?, isChecked: Boolean ->
+        if (isChecked != bond.value) {
+            bond.value = (isChecked)
+        }
+    }
+    lifecycle.bind(bond) {
+        val value = bond.value
+        if (isChecked != value) {
+            isChecked = value ?: default
+        }
+    }
+}
+
 inline fun CompoundButton.bindList(bond: MutableObservableProperty<MutableList<Boolean>>, index: Int) {
     this.onCheckedChange {
         buttonView: CompoundButton?, isChecked: Boolean ->
