@@ -40,7 +40,7 @@ inline fun CompoundButton.bindArray(bond: MutableObservableProperty<Array<Boolea
     lifecycle.bind(bond) {
         val value = bond.value[index]
         if (isChecked != value) {
-            isChecked = value;
+            isChecked = value
         }
     }
 }
@@ -56,7 +56,24 @@ inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean>) 
     lifecycle.bind(bond) {
         val value = bond.value
         if (isChecked != value) {
-            isChecked = value;
+            isChecked = value
+        }
+    }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+@JvmName("bindBooleanOptional")
+inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean?>, default: Boolean = false) {
+    this.onCheckedChange {
+        buttonView: CompoundButton?, isChecked: Boolean ->
+        if (isChecked != bond.value) {
+            bond.value = (isChecked)
+        }
+    }
+    lifecycle.bind(bond) {
+        val value = bond.value
+        if (isChecked != value) {
+            isChecked = value ?: default
         }
     }
 }
@@ -72,7 +89,7 @@ inline fun CompoundButton.bindList(bond: MutableObservableProperty<MutableList<B
     lifecycle.bind(bond) {
         val value = bond.value[index]
         if (isChecked != value) {
-            isChecked = value;
+            isChecked = value
         }
     }
 }
@@ -128,7 +145,7 @@ fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T) {
     lifecycle.bind(list) {
         val contained = list.contains(item)
         if (isChecked != contained) {
-            isChecked = contained;
+            isChecked = contained
         }
     }
 }
@@ -149,7 +166,7 @@ inline fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T, crossin
     lifecycle.bind(list) {
         val index = list.indexOfFirst { matches(it, item) }
         if (isChecked != (index != -1)) {
-            isChecked = (index != -1);
+            isChecked = (index != -1)
         }
     }
 }
