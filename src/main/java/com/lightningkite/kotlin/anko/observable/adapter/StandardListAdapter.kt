@@ -178,3 +178,38 @@ inline fun <T> Spinner.standardAdapter(
     }
     return newAdapter
 }
+
+inline fun <T> Spinner.standardAdapter(
+        list: List<T>,
+        selected: MutableObservableProperty<T>,
+        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+): StandardListAdapter<T> {
+    val newAdapter: StandardListAdapter<T> = StandardListAdapter(context, list, makeView)
+    adapter = newAdapter
+
+    var indexAlreadySet = false
+
+    lifecycle.bind(selected) { it ->
+        val index = list.indexOf(it)
+        println("selected to $index - $it")
+        if (index == -1) {
+            println("could not find $it")
+            setSelection(0)
+            return@bind
+        }
+        if (!indexAlreadySet) {
+            setSelection(index)
+        } else {
+            indexAlreadySet = false
+        }
+    }
+
+    this.onItemSelectedListener {
+        onItemSelected { adapterView, view, index, id ->
+            println("set to $index - ${list[index]}")
+            indexAlreadySet = true
+            selected.value = (list[index])
+        }
+    }
+    return newAdapter
+}
