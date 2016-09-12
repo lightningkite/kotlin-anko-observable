@@ -2,8 +2,8 @@ package com.lightningkite.kotlin.anko.observable
 
 import android.text.InputType
 import android.widget.EditText
-import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.anko.NumericalString
+import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.anko.textChanger
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
@@ -115,6 +115,7 @@ inline fun EditText.bindNullableInt(bond: MutableObservableProperty<Int?>, forma
         onTextChanged { charSequence, start, before, count ->
 
             value = null
+            if (charSequence.isNullOrBlank()) return@onTextChanged
 
             try {
                 value = format.parse(charSequence.toString()).toInt()
@@ -156,6 +157,7 @@ inline fun EditText.bindNullableFloat(bond: MutableObservableProperty<Float?>, f
         onTextChanged { charSequence, start, before, count ->
 
             value = null
+            if (charSequence.isNullOrBlank()) return@onTextChanged
 
             try {
                 value = format.parse(charSequence.toString()).toFloat()
@@ -197,6 +199,7 @@ inline fun EditText.bindNullableDouble(bond: MutableObservableProperty<Double?>,
         onTextChanged { charSequence, start, before, count ->
 
             value = null
+            if (charSequence.isNullOrBlank()) return@onTextChanged
 
             try {
                 value = format.parse(charSequence.toString()).toDouble()
