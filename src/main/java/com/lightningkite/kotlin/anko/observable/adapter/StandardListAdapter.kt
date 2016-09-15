@@ -3,10 +3,7 @@ package com.lightningkite.kotlin.anko.observable.adapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.BaseAdapter
-import android.widget.ListView
-import android.widget.Spinner
+import android.widget.*
 import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.lifecycle.listen
 import com.lightningkite.kotlin.observable.list.ObservableList
@@ -18,6 +15,7 @@ import org.jetbrains.anko.AnkoContextImpl
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.onItemSelectedListener
 import org.jetbrains.anko.wrapContent
+import java.util.*
 
 /**
  * Created by josep on 1/24/2016.
@@ -210,6 +208,85 @@ inline fun <T> Spinner.standardAdapter(
             indexAlreadySet = true
             selected.value = (list[index])
         }
+    }
+    return newAdapter
+}
+
+class FilterableStandardListAdapter<T>(
+        context: Context,
+        list: List<T>,
+        val convertToString: (T) -> String = { it.toString() },
+        val matches: T.(CharSequence) -> Boolean = { convertToString(this).contains(it, true) },
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+) : StandardListAdapter<T>(context, list, makeView), Filterable {
+    val mutableList = mutableListOf<T>()
+
+    override fun getFilter(): Filter? = object : Filter() {
+        private val suggestions: ArrayList<T> = ArrayList()
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            if (constraint == null) return FilterResults()
+            suggestions.clear()
+            val constraintString = constraint.toString()
+            for (item in list) {
+                if (item.matches(constraintString)) {
+                    suggestions.add(item)
+                }
+            }
+            val results = FilterResults()
+            results.count = suggestions.size
+            results.values = suggestions
+            return results
+        }
+
+        override fun publishResults(constraint: CharSequence?, results: FilterResults) {
+            if (results.count > 0) {
+                //list = results.values as ArrayList<T>
+                mutableList.clear()
+                mutableList.addAll(results.values as ArrayList<T>)
+                notifyDataSetChanged()
+            }
+        }
+
+        override fun convertResultToString(resultValue: Any?): CharSequence {
+            return convertToString(resultValue as T)
+        }
+    }
+
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View? = getView(position, convertView, parent)
+}
+
+inline fun <T> AutoCompleteTextView.standardAdapter(
+        list: List<T>,
+        noinline convertToString: (T) -> String = { it.toString() },
+        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+): StandardListAdapter<T> {
+    val newAdapter = FilterableStandardListAdapter(context, list, convertToString, makeView = makeView)
+    setAdapter(newAdapter)
+    return newAdapter
+}
+
+inline fun <T> AutoCompleteTextView.standardAdapter(
+        listObs: ObservableProperty<List<T>>,
+        noinline convertToString: (T) -> String = { it.toString() },
+        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+): StandardListAdapter<T> {
+    val newAdapter = FilterableStandardListAdapter(context, listObs.value, convertToString, makeView = makeView)
+    setAdapter(newAdapter)
+    lifecycle.listen(listObs) {
+        newAdapter.list = it
+    }
+    return newAdapter
+}
+
+inline fun <T> AutoCompleteTextView.standardAdapter(
+        list: ObservableList<T>,
+        noinline convertToString: (T) -> String = { it.toString() },
+        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+): StandardListAdapter<T> {
+    val newAdapter = FilterableStandardListAdapter(context, list, convertToString, makeView = makeView)
+    setAdapter(newAdapter)
+    lifecycle.listen(list.onUpdate) {
+        newAdapter.notifyDataSetChanged()
     }
     return newAdapter
 }
