@@ -2,6 +2,7 @@ package com.lightningkite.kotlin.anko.observable.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.ViewGroup
 import com.lightningkite.kotlin.runAll
 import java.util.*
@@ -34,7 +35,10 @@ class MultiRecyclerViewAdapter(
         }
 
         override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-            this@MultiRecyclerViewAdapter.notifyItemRangeRemoved(getIndexInThis(child, positionStart), itemCount)
+            Log.d("MultiRecyclerViewAdapte", "onItemRangeRemoved - pos = $positionStart, count = $itemCount")
+            val resultPos = getIndexInThis(child, positionStart)
+            Log.d("MultiRecyclerViewAdapte", "onItemRangeRemoved - resultPos = $resultPos, count = $itemCount")
+            this@MultiRecyclerViewAdapter.notifyItemRangeRemoved(resultPos, itemCount)
         }
 
         override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
@@ -110,7 +114,7 @@ class MultiRecyclerViewAdapter(
             if (child === adapter) {
                 return position + startPos
             }
-            startPos += adapter.itemCount
+            startPos += child.itemCount
         }
         throw IllegalArgumentException()
     }
@@ -146,7 +150,6 @@ class MultiRecyclerViewAdapter(
     @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val info = getChildInfo(position)
-        println("onBindViewHolder info = $info")
         (adapters[getItemViewType(position)] as RecyclerView.Adapter<RecyclerView.ViewHolder>).onBindViewHolder(holder, info.second)
     }
 }

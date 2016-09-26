@@ -23,8 +23,11 @@ fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimatio
             onRemoveListener = { item: ITEM, position: Int ->
                 notifyItemRemoved(position)
             },
-            onChangeListener = { item: ITEM, position: Int ->
+            onChangeListener = { oldItem: ITEM, item: ITEM, position: Int ->
                 notifyItemChanged(position)
+            },
+            onMoveListener = { item: ITEM, oldPosition: Int, position: Int ->
+                notifyItemMoved(oldPosition, position)
             },
             onReplaceListener = { list: ObservableList<ITEM> ->
                 notifyDataSetChanged()
