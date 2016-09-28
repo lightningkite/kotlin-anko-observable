@@ -150,7 +150,7 @@ class MultiRecyclerViewAdapter(
     @Suppress("UNCHECKED_CAST")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val info = getChildInfo(position)
-        (adapters[getItemViewType(position)] as RecyclerView.Adapter<RecyclerView.ViewHolder>).onBindViewHolder(holder, info.second)
+        (info.first as RecyclerView.Adapter<RecyclerView.ViewHolder>).onBindViewHolder(holder, info.second)
     }
 }
 
