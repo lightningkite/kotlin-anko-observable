@@ -63,7 +63,7 @@ open class StandardListAdapter<T>(
 
     class SLVAContext<T>(adapter: StandardListAdapter<T>, context: Context) : AnkoContextImpl<StandardListAdapter<T>>(context, adapter, false) {
         fun <V : View> V.lparams(
-                width: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
+                width: Int = ViewGroup.LayoutParams.MATCH_PARENT,
                 height: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
                 init: AbsListView.LayoutParams.() -> Unit = {}
         ): V {
