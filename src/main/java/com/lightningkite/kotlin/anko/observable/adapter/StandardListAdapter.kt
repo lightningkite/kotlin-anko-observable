@@ -214,12 +214,12 @@ inline fun <T> Spinner.standardAdapter(
 
 class FilterableStandardListAdapter<T>(
         context: Context,
-        list: List<T>,
+        val fullList: List<T>,
         val convertToString: (T) -> String = { it.toString() },
         val matches: T.(CharSequence) -> Boolean = { convertToString(this).contains(it, true) },
-        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
-) : StandardListAdapter<T>(context, list, makeView), Filterable {
-    val mutableList = mutableListOf<T>()
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit,
+        val mutableList: MutableList<T> = mutableListOf<T>()
+) : StandardListAdapter<T>(context, mutableList, makeView), Filterable {
 
     override fun getFilter(): Filter? = object : Filter() {
         private val suggestions: ArrayList<T> = ArrayList()
@@ -227,7 +227,7 @@ class FilterableStandardListAdapter<T>(
             if (constraint == null) return FilterResults()
             suggestions.clear()
             val constraintString = constraint.toString()
-            for (item in list) {
+            for (item in fullList) {
                 if (item.matches(constraintString)) {
                     suggestions.add(item)
                 }
