@@ -109,27 +109,26 @@ inline fun EditText.bindInt(bond: MutableObservableProperty<Int>, format: Number
  */
 inline fun EditText.bindNullableInt(bond: MutableObservableProperty<Int?>, format: NumberFormat = NumberFormat.getNumberInstance()) {
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-    val originalTextColor = this.textColors.defaultColor
     var value: Int? = null
     textChangedListener {
         onTextChanged { charSequence, start, before, count ->
 
             value = null
-            if (charSequence.isNullOrBlank()) return@onTextChanged
+            if (!charSequence.isNullOrBlank()) {
+                try {
+                    value = format.parse(charSequence.toString()).toInt()
+                } catch(e: ParseException) {
+                    //do nothing.
+                }
 
-            try {
-                value = format.parse(charSequence.toString()).toInt()
-            } catch(e: ParseException) {
-                //do nothing.
+                try {
+                    value = charSequence.toString().toInt()
+                } catch(e: NumberFormatException) {
+                    //do nothing.
+                }
+
             }
 
-            try {
-                value = charSequence.toString().toInt()
-            } catch(e: NumberFormatException) {
-                //do nothing.
-            }
-
-            textColor = originalTextColor
             if (bond.value != value) {
                 bond.value = (value!!)
             }
@@ -151,30 +150,31 @@ inline fun EditText.bindNullableInt(bond: MutableObservableProperty<Int?>, forma
 @Suppress("NOTHING_TO_INLINE")
 inline fun EditText.bindNullableFloat(bond: MutableObservableProperty<Float?>, format: NumberFormat = NumberFormat.getNumberInstance()) {
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-    val originalTextColor = this.textColors.defaultColor
     var value: Float? = null
     textChangedListener {
         onTextChanged { charSequence, start, before, count ->
 
             value = null
-            if (charSequence.isNullOrBlank()) return@onTextChanged
+            if (!charSequence.isNullOrBlank()) {
 
-            try {
-                value = format.parse(charSequence.toString()).toFloat()
-            } catch(e: ParseException) {
-                //do nothing.
+                try {
+                    value = format.parse(charSequence.toString()).toFloat()
+                } catch(e: ParseException) {
+                    //do nothing.
+                }
+
+                try {
+                    value = charSequence.toString().toFloat()
+                } catch(e: NumberFormatException) {
+                    //do nothing.
+                }
             }
 
-            try {
-                value = charSequence.toString().toFloat()
-            } catch(e: NumberFormatException) {
-                //do nothing.
-            }
-
-            textColor = originalTextColor
+            println("PRE value $value obs ${bond.value}")
             if (bond.value != value) {
                 bond.value = (value)
             }
+            println("PST value $value obs ${bond.value}")
         }
     }
     lifecycle.bind(bond) {
@@ -199,18 +199,19 @@ inline fun EditText.bindNullableDouble(bond: MutableObservableProperty<Double?>,
         onTextChanged { charSequence, start, before, count ->
 
             value = null
-            if (charSequence.isNullOrBlank()) return@onTextChanged
 
-            try {
-                value = format.parse(charSequence.toString()).toDouble()
-            } catch(e: ParseException) {
-                //do nothing.
-            }
+            if (!charSequence.isNullOrBlank()) {
+                try {
+                    value = format.parse(charSequence.toString()).toDouble()
+                } catch(e: ParseException) {
+                    //do nothing.
+                }
 
-            try {
-                value = charSequence.toString().toDouble()
-            } catch(e: NumberFormatException) {
-                //do nothing.
+                try {
+                    value = charSequence.toString().toDouble()
+                } catch(e: NumberFormatException) {
+                    //do nothing.
+                }
             }
 
             textColor = originalTextColor
