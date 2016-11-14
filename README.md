@@ -41,7 +41,7 @@ This library makes the creation of adapters in Anko WAY easier by using observab
 ```kotlin
 verticalRecyclerView {
   //Create and use an adapter using the list `items`.
-  adapter = listAdapter(items) { obs ->
+  adapter = listAdapter(items) { loadingObs ->
   
     //Create the view used for each item
     textView {
@@ -51,12 +51,12 @@ verticalRecyclerView {
       backgroundResource = selectableItemBackgroundResource
 
       //updates the text in this TextView when the item changes
-      lifecycle.bind(obs){ item ->
+      lifecycle.bind(loadingObs){ item ->
         text = item.toString()
       }
 
       onLongClick {
-        items.removeAt(obs.position)
+        items.removeAt(loadingObs.position)
         true
       }
     }.lparams(matchParent, wrapContent)
