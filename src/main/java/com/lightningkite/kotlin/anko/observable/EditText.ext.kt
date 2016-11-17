@@ -130,7 +130,7 @@ inline fun EditText.bindNullableInt(bond: MutableObservableProperty<Int?>, forma
             }
 
             if (bond.value != value) {
-                bond.value = (value!!)
+                bond.value = (value)
             }
         }
     }
