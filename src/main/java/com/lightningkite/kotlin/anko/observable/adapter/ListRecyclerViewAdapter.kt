@@ -57,6 +57,7 @@ open class ListRecyclerViewAdapter<T>(
         val newView = SRVAContext(this, context).apply { makeView(observable) }.view
         val holder = ViewHolder(newView, observable)
         observable.viewHolder = holder
+        itemHolders.add(holder)
         return holder
     }
 
@@ -73,6 +74,7 @@ open class ListRecyclerViewAdapter<T>(
     }
 
 
+    val itemHolders = ArrayList<ViewHolder<T>>()
     val itemObservables = ArrayList<ItemObservable<T>>()
 
     class ItemObservable<T>(val parent: ListRecyclerViewAdapter<T>) : ObservablePropertyBase<T>() {
@@ -100,7 +102,7 @@ open class ListRecyclerViewAdapter<T>(
 
     }
 
-    class ViewHolder<T>(val itemView: View, val observable: ItemObservable<T>) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder<T>(val view: View, val observable: ItemObservable<T>) : RecyclerView.ViewHolder(view)
 
     fun update(position: Int) {
         itemObservables.find { it.position == position }?.update()
