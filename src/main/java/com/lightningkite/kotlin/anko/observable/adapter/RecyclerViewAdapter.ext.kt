@@ -12,7 +12,7 @@ import java.util.*
 /**
  * Created by joseph on 9/20/16.
  */
-val previousListenerSet: HashMap<RecyclerView.Adapter<*>, Pair<ObservableList<*>, ObservableListListenerSet<*>>> = HashMap()
+val previousListenerSet: WeakHashMap<RecyclerView.Adapter<*>, Pair<ObservableList<*>, ObservableListListenerSet<*>>> = WeakHashMap()
 
 fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimations(list: ObservableList<ITEM>) {
     detatchAnimations<ITEM, VH>()
@@ -37,11 +37,12 @@ fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimatio
     list.addListenerSet(newSet.second)
 }
 
-@Suppress("UNCHECKED_CASt")
+@Suppress("UNCHECKED_CAST")
 fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.detatchAnimations() {
     val prev = previousListenerSet[this]
     if (prev != null) {
         (prev.first as ObservableList<ITEM>).removeListenerSet(prev.second as ObservableListListenerSet<ITEM>)
+        previousListenerSet.remove(this)
     }
 }
 
