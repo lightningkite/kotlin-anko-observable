@@ -383,7 +383,12 @@ inline fun EditText.bindNullableDoubleAutoComma(bond: MutableObservableProperty<
             iSet = false
         } else {
 //            println("read")
-            this.setText(format.format(bond.value))
+            val value = bond.value
+            if (value != null) {
+                this.setText(format.format(value))
+            } else {
+                this.text = null
+            }
         }
     }
 }
