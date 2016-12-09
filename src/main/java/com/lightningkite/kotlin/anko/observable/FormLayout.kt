@@ -40,7 +40,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
     var makeField: ViewGroup.(hint: Int, innerViewMaker: ViewGroup.() -> View) -> View = { hint, builder ->
         verticalLayout {
             gravity = Gravity.CENTER_VERTICAL
-            textView(hint).lparams(matchParent, wrapContent)
+            textView(text = hint).lparams(matchParent, wrapContent)
             builder().lparams(matchParent, wrapContent)
         }
     }
@@ -62,7 +62,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         makeField = { hint, builder ->
             verticalLayout {
                 gravity = Gravity.CENTER_VERTICAL
-                textView(hint) { styleHintText() }.lparams(matchParent, wrapContent)
+                textView(text = hint) { styleHintText() }.lparams(matchParent, wrapContent)
                 builder().lparams(matchParent, wrapContent)
             }
         }
@@ -314,7 +314,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         minimumHeight = defaultMinimumHeight
         gravity = Gravity.CENTER
 
-        textView(label).lparams(0, wrapContent, 1f) {
+        textView(text = label).lparams(0, wrapContent, 1f) {
             leftMargin = defaultHorizontalPadding
             rightMargin = defaultHorizontalPadding / 2
         }
@@ -421,4 +421,4 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
 }
 
 @Deprecated("Instead of using a FormLayout, use standard layouts instead and then use a collection of Validations to validate.")
-inline fun ViewManager.formLayout(init: FormLayout.() -> Unit) = ankoView({ FormLayout(it) }, init)
+inline fun ViewManager.formLayout(init: FormLayout.() -> Unit) = ankoView(::FormLayout, 0, init)
