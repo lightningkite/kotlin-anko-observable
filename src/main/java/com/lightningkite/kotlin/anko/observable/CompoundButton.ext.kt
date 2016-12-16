@@ -5,6 +5,7 @@ import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.observable.list.ObservableList
 import com.lightningkite.kotlin.observable.list.bind
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
+import com.lightningkite.kotlin.observable.property.ObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
 import org.jetbrains.anko.onCheckedChange
 
@@ -167,6 +168,48 @@ inline fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T, crossin
         val index = list.indexOfFirst { matches(it, item) }
         if (isChecked != (index != -1)) {
             isChecked = (index != -1)
+        }
+    }
+}
+
+fun <T> CompoundButton.bindList(list: ObservableList<T>, itemObs: ObservableProperty<T>) {
+    this.onCheckedChange {
+        buttonView: CompoundButton?, isChecked: Boolean ->
+
+        val index = list.indexOf(itemObs.value)
+        if (isChecked != (index != -1)) {
+            if (index != -1) {
+                list.removeAt(index)
+            } else {
+                list.add(itemObs.value)
+            }
+        }
+    }
+    lifecycle.bind(list.onUpdate, itemObs) { list, item ->
+        val contained = list.contains(item)
+        if (isChecked != contained) {
+            isChecked = contained
+        }
+    }
+}
+
+inline fun <T> CompoundButton.bindList(list: ObservableList<T>, itemObs: ObservableProperty<T>, crossinline matches: (T, T) -> Boolean) {
+    this.onCheckedChange {
+        buttonView: CompoundButton?, isChecked: Boolean ->
+
+        val index = list.indexOfFirst { matches(it, itemObs.value) }
+        if (isChecked != (index != -1)) {
+            if (index != -1) {
+                list.removeAt(index)
+            } else {
+                list.add(itemObs.value)
+            }
+        }
+    }
+    lifecycle.bind(list.onUpdate, itemObs) { list, item ->
+        val contained = list.contains(item)
+        if (isChecked != contained) {
+            isChecked = contained
         }
     }
 }
