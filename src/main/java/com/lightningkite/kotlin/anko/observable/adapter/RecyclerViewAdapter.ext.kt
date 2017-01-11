@@ -40,9 +40,11 @@ fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimatio
 @Suppress("UNCHECKED_CAST")
 fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimationsMin1(list: ObservableList<ITEM>) {
     detatchAnimations<ITEM, VH>()
+    var knownCount = list.size
     val newSet = list to ObservableListListenerSet(
             onAddListener = { item: ITEM, position: Int ->
-                if (list.size == 1) {
+                knownCount++
+                if (knownCount == 1) {
                     notifyItemChanged(position)
                 } else {
                     notifyItemInserted(position)
@@ -50,7 +52,8 @@ fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimatio
             },
             onRemoveListener = { item: ITEM, position: Int ->
                 //ensures there is always at least one element shown
-                if (list.isEmpty()) {
+                knownCount--
+                if (knownCount == 0) {
                     notifyItemChanged(position)
                 } else {
                     notifyItemRemoved(position)
@@ -63,6 +66,7 @@ fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimatio
                 notifyItemMoved(oldPosition, position)
             },
             onReplaceListener = { list: ObservableList<ITEM> ->
+                knownCount = list.size
                 notifyDataSetChanged()
             }
     )
