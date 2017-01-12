@@ -123,31 +123,11 @@ open class ListRecyclerViewAdapter<T>(
     }
 }
 
-@Deprecated("Use listAdapter() instead.", ReplaceWith("adapter = listAdapter(list, makeView)", "com.lightningkite.kotlincomponents.adapter.listAdapter"))
-inline fun <T> RecyclerView.standardAdapter(
-        list: List<T>,
-        noinline makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
-): ListRecyclerViewAdapter<T> {
-    val newAdapter = listAdapter(list, makeView)
-    adapter = newAdapter
-    return newAdapter
-}
-
 inline fun <T> RecyclerView.listAdapter(
         list: List<T>,
         noinline makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
 ): ListRecyclerViewAdapter<T> {
     val newAdapter = ListRecyclerViewAdapter(context, list, makeView)
-    return newAdapter
-}
-
-@Deprecated("Use listAdapter() instead.", ReplaceWith("adapter = listAdapter(list, makeView)", "com.lightningkite.kotlincomponents.adapter.listAdapter"))
-inline fun <T> RecyclerView.standardAdapter(
-        list: ObservableList<T>,
-        noinline makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
-): ListRecyclerViewAdapter<T> {
-    val newAdapter = listAdapter(list, makeView)
-    adapter = newAdapter
     return newAdapter
 }
 
@@ -160,15 +140,6 @@ inline fun <T> RecyclerView.listAdapter(
     return newAdapter
 }
 
-@Deprecated("Use listAdapterObservable() instead.", ReplaceWith("adapter = listAdapter(list, makeView)", "com.lightningkite.kotlincomponents.adapter.listAdapter"))
-inline fun <T> RecyclerView.standardAdapterObservable(
-        listObs: ObservableProperty<List<T>>,
-        noinline makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
-): ListRecyclerViewAdapter<T> {
-    val newAdapter = listAdapterObservable(listObs, makeView)
-    adapter = newAdapter
-    return newAdapter
-}
 
 inline fun <T> RecyclerView.listAdapterObservable(
         listObs: ObservableProperty<List<T>>,
