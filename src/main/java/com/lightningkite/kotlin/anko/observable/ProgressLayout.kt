@@ -8,6 +8,7 @@ import com.lightningkite.kotlin.anko.animation.TransitionView
 import com.lightningkite.kotlin.anko.animation.transitionView
 import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
+import com.lightningkite.kotlin.observable.property.ObservableProperty
 import com.lightningkite.kotlin.observable.property.StandardObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
 import org.jetbrains.anko.AnkoContext
@@ -23,6 +24,25 @@ fun ViewGroup.progressLayout(
 ): TransitionView {
     return transitionView() {
         otherViewMaker(runningObs).tag("content").apply {
+            (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
+        }
+        progressBar().lparams(wrapContent, wrapContent).tag("loading").apply {
+            (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
+        }
+
+        lifecycle.bind(runningObs) { loading ->
+            if (loading) animate("loading")
+            else animate("content")
+        }
+    }
+}
+
+fun ViewGroup.progressLayoutReadOnly(
+        runningObs: ObservableProperty<Boolean>,
+        otherViewMaker: TransitionView.() -> View
+): TransitionView {
+    return transitionView() {
+        otherViewMaker().tag("content").apply {
             (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
         }
         progressBar().lparams(wrapContent, wrapContent).tag("loading").apply {
