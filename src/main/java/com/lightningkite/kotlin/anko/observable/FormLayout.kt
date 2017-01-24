@@ -333,7 +333,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
 
     }.lparams(matchParent, wrapContent)
 
-    inline fun ViewGroup.submit(text: Int, showFailReason: Boolean = true, setup: ProgressButton.() -> Unit) = formProgressButton(text) {
+    inline fun ViewGroup.submit(text: Int, showFailReason: Boolean = true, setup: ProgressButton.() -> Unit) = formProgressButton(text = text) {
         lifecycle.bind(isPassingObs) {
             button.isEnabled = it
         }
@@ -348,7 +348,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         setup()
     }
 
-    inline fun ViewGroup.formProgressButton(text: Int, setup: ProgressButton.() -> Unit) = progressButton(text) {
+    inline fun ViewGroup.formProgressButton(text: Int, setup: ProgressButton.() -> Unit) = progressButton(textResource = text) {
         button.lparams(matchParent, matchParent) { formMargins() }
         button.minimumHeight = defaultMinimumHeight
         button.buttonStyle()
@@ -368,7 +368,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         setup()
     }
 
-    inline fun ViewGroup.formButton(text: Int, setup: Button.() -> Unit): Button = button(text) {
+    inline fun ViewGroup.formButton(text: Int, setup: Button.() -> Unit): Button = button(text = text) {
         minimumHeight = defaultMinimumHeight
         buttonStyle()
         setup()
