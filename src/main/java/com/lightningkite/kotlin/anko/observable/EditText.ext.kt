@@ -321,8 +321,7 @@ inline fun EditText.bindDouble(bond: MutableObservableProperty<Double>, format: 
  * When the user edits this, the value of the bond will change.
  * When the value of the bond changes, the number here will be updated.
  */
-@Suppress("NOTHING_TO_INLINE")
-inline fun EditText.bindDoubleAutoComma(bond: MutableObservableProperty<Double>, format: NumberFormat = NumberFormat.getNumberInstance()) {
+fun EditText.bindDoubleAutoComma(bond: MutableObservableProperty<Double>, format: NumberFormat = NumberFormat.getNumberInstance()) {
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
 
     var iSet = false
@@ -351,8 +350,7 @@ inline fun EditText.bindDoubleAutoComma(bond: MutableObservableProperty<Double>,
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun EditText.bindNullableDoubleAutoComma(bond: MutableObservableProperty<Double?>, format: NumberFormat = NumberFormat.getNumberInstance()) {
+fun EditText.bindNullableDoubleAutoComma(bond: MutableObservableProperty<Double?>, format: NumberFormat = NumberFormat.getNumberInstance()) {
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
 
     var iSet = false
