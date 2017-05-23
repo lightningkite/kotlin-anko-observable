@@ -259,7 +259,7 @@ inline fun <T> AutoCompleteTextView.standardAdapter(
         list: List<T>,
         noinline convertToString: (T) -> String = { it.toString() },
         noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
-): StandardListAdapter<T> {
+): FilterableStandardListAdapter<T> {
     val newAdapter = FilterableStandardListAdapter(context, list, convertToString, makeView = makeView)
     setAdapter(newAdapter)
     return newAdapter
@@ -269,7 +269,7 @@ inline fun <T> AutoCompleteTextView.standardAdapter(
         listObs: ObservableProperty<List<T>>,
         noinline convertToString: (T) -> String = { it.toString() },
         noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
-): StandardListAdapter<T> {
+): FilterableStandardListAdapter<T> {
     val newAdapter = FilterableStandardListAdapter(context, listObs.value, convertToString, makeView = makeView)
     setAdapter(newAdapter)
     lifecycle.listen(listObs) {
@@ -282,7 +282,7 @@ inline fun <T> AutoCompleteTextView.standardAdapter(
         list: ObservableList<T>,
         noinline convertToString: (T) -> String = { it.toString() },
         noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
-): StandardListAdapter<T> {
+): FilterableStandardListAdapter<T> {
     val newAdapter = FilterableStandardListAdapter(context, list, convertToString, makeView = makeView)
     setAdapter(newAdapter)
     lifecycle.listen(list.onUpdate) {
