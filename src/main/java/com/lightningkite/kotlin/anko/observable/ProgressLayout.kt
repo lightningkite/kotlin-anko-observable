@@ -27,6 +27,8 @@ fun ViewManager.progressLayout(
             (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
         }
         progressBar().lparams(progressSize, progressSize).tag("loading").apply {
+            minimumWidth = 0
+            minimumHeight = 0
             (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
         }
 
@@ -46,6 +48,8 @@ fun ViewManager.progressLayoutReadOnly(
             (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
         }
         progressBar().lparams(wrapContent, wrapContent).tag("loading").apply {
+            minimumWidth = 0
+            minimumHeight = 0
             (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
         }
 
