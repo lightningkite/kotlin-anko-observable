@@ -156,7 +156,7 @@ inline fun <T> Spinner.standardAdapter(
         val index = list.indexOf(it)
         println("selected to $index - $it")
         if (index == -1) {
-            println("could not find $it")
+            println("could not find ${it?.hashCode()} in ${list.joinToString { it?.hashCode().toString() }}")
             setSelection(0)
             return@bind
         }
