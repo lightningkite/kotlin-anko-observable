@@ -11,6 +11,8 @@ import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.ObservableProperty
 import com.lightningkite.kotlin.observable.property.StandardObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
+import org.jetbrains.anko.margin
+import org.jetbrains.anko.padding
 import org.jetbrains.anko.progressBar
 import org.jetbrains.anko.wrapContent
 
@@ -26,7 +28,10 @@ fun ViewManager.progressLayout(
         otherViewMaker(runningObs).tag("content").apply {
             (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
         }
-        progressBar().lparams(progressSize, progressSize).tag("loading").apply {
+        progressBar().lparams(progressSize, progressSize) { margin = 0 }.tag("loading").apply {
+            minimumWidth = 0
+            minimumHeight = 0
+            padding = 0
             (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
         }
 
@@ -46,6 +51,8 @@ fun ViewManager.progressLayoutReadOnly(
             (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
         }
         progressBar().lparams(wrapContent, wrapContent).tag("loading").apply {
+            minimumWidth = 0
+            minimumHeight = 0
             (layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER
         }
 
