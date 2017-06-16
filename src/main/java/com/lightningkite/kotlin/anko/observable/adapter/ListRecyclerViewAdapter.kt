@@ -35,6 +35,7 @@ open class ListRecyclerViewAdapter<T>(
 ) : RecyclerView.Adapter<ListRecyclerViewAdapter.ViewHolder<T>>() {
 
 
+
     var list: List<T> = initialList
         set(value) {
             field = value
@@ -58,6 +59,7 @@ open class ListRecyclerViewAdapter<T>(
         val holder = ViewHolder(newView, observable)
         observable.viewHolder = holder
         itemHolders.add(holder)
+        holder.view.lifecycle.setAlwaysOnRecursive() //Necessary because Android is broke
         return holder
     }
 
@@ -99,7 +101,6 @@ open class ListRecyclerViewAdapter<T>(
                 super.update()
             }
         }
-
     }
 
     class ViewHolder<T>(val view: View, val observable: ItemObservable<T>) : RecyclerView.ViewHolder(view)
