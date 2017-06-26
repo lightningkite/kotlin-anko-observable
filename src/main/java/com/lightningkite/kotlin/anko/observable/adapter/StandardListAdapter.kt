@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.lightningkite.kotlin.anko.lifecycle
+import com.lightningkite.kotlin.anko.observable.OnItemSelectedAdapter
 import com.lightningkite.kotlin.lifecycle.listen
 import com.lightningkite.kotlin.observable.list.ObservableList
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
@@ -13,7 +14,6 @@ import com.lightningkite.kotlin.observable.property.StandardObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
 import org.jetbrains.anko.AnkoContextImpl
 import org.jetbrains.anko.matchParent
-import org.jetbrains.anko.onItemSelectedListener
 import org.jetbrains.anko.wrapContent
 import java.util.*
 
@@ -167,11 +167,11 @@ inline fun <T> Spinner.standardAdapter(
         }
     }
 
-    this.onItemSelectedListener {
-        onItemSelected { adapterView, view, index, id ->
-            println("set to $index - ${list[index]}")
+    onItemSelectedListener = object : OnItemSelectedAdapter() {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            println("set to $position - ${list[position]}")
             indexAlreadySet = true
-            selected.value = (list[index])
+            selected.value = (list[position])
         }
     }
     return newAdapter
@@ -202,11 +202,11 @@ inline fun <T> Spinner.standardAdapter(
         }
     }
 
-    this.onItemSelectedListener {
-        onItemSelected { adapterView, view, index, id ->
-            println("set to $index - ${list[index]}")
+    onItemSelectedListener = object : OnItemSelectedAdapter() {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            println("set to $position - ${list[position]}")
             indexAlreadySet = true
-            selected.value = (list[index])
+            selected.value = (list[position])
         }
     }
     return newAdapter

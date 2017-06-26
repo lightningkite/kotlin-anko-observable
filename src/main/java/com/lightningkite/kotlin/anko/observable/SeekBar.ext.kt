@@ -5,7 +5,7 @@ import android.widget.SeekBar
 import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
-import org.jetbrains.anko.onSeekBarChangeListener
+//import org.jetbrains.anko.onSeekBarChangeListener
 
 /**
  * Binds this [SeekBar] two way to the observable property.
@@ -21,16 +21,24 @@ inline fun SeekBar.bindInt(range: IntRange, obs: MutableObservableProperty<Int>)
             this.progress = newProg
         }
     }
-    onSeekBarChangeListener {
-        onProgressChanged { seekBar, value, fromUser ->
-            if (fromUser) {
-                val newValue = value + range.start
+    setOnSeekBarChangeListener(object : SeekBarChangeAdapter() {
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+           if (fromUser) {
+                val newValue = progress + range.start
                 if (obs.value != newValue) {
                     obs.value = newValue
                 }
             }
         }
-    }
+    })
+}
+
+abstract class SeekBarChangeAdapter : SeekBar.OnSeekBarChangeListener {
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {}
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 }
 
 /**
@@ -47,16 +55,16 @@ inline fun SeekBar.bindFloat(range: FloatRange, steps: Int = 1000, obs: MutableO
             this.progress = newProg
         }
     }
-    onSeekBarChangeListener {
-        onProgressChanged { seekBar, value, fromUser ->
+    setOnSeekBarChangeListener(object : SeekBarChangeAdapter() {
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             if (fromUser) {
-                val newValue = ((value.toDouble() / steps) * (range.to - range.from) + range.from).toFloat()
+                val newValue = ((progress.toDouble() / steps) * (range.to - range.from) + range.from).toFloat()
                 if (obs.value != newValue) {
                     obs.value = newValue
                 }
             }
         }
-    }
+    })
 }
 
 /**
@@ -73,14 +81,14 @@ inline fun SeekBar.bindDouble(range: FloatRange, steps: Int = 1000, obs: Mutable
             this.progress = newProg
         }
     }
-    onSeekBarChangeListener {
-        onProgressChanged { seekBar, value, fromUser ->
+    setOnSeekBarChangeListener(object : SeekBarChangeAdapter() {
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             if (fromUser) {
-                val newValue = ((value.toDouble() / steps) * (range.to - range.from) + range.from)
+                val newValue = ((progress.toDouble() / steps) * (range.to - range.from) + range.from)
                 if (obs.value != newValue) {
                     obs.value = newValue
                 }
             }
         }
-    }
+    })
 }

@@ -1,6 +1,8 @@
 package com.lightningkite.kotlin.anko.observable
 
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.widget.EditText
 import com.lightningkite.kotlin.anko.NumericalString
 import com.lightningkite.kotlin.anko.lifecycle
@@ -9,10 +11,17 @@ import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
 import com.lightningkite.kotlin.text.toDoubleMaybe
 import org.jetbrains.anko.opaque
-import org.jetbrains.anko.textChangedListener
 import org.jetbrains.anko.textColor
 import java.text.NumberFormat
 import java.text.ParseException
+
+abstract class TextWatcherAdapter : TextWatcher {
+    override fun afterTextChanged(s: Editable?) {}
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+}
 
 /**
  * Binds this [EditText] two way to the bond.
@@ -22,13 +31,13 @@ import java.text.ParseException
 @Suppress("NOTHING_TO_INLINE")
 inline fun EditText.bindString(bond: MutableObservableProperty<String>) {
     setText(bond.value)
-    textChangedListener {
-        onTextChanged { charSequence, start, before, count ->
-            if (bond.value != charSequence) {
-                bond.value = (charSequence.toString())
+    addTextChangedListener(object : TextWatcherAdapter() {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if (bond.value != s) {
+                bond.value = (s.toString())
             }
         }
-    }
+    })
     lifecycle.bind(bond) {
         if (bond.value != text.toString()) {
             this.setText(bond.value)
@@ -44,13 +53,13 @@ inline fun EditText.bindString(bond: MutableObservableProperty<String>) {
 @Suppress("NOTHING_TO_INLINE")
 inline fun EditText.bindNullableString(bond: MutableObservableProperty<String?>) {
     setText(bond.value)
-    textChangedListener {
-        onTextChanged { charSequence, start, before, count ->
-            if (bond.value != charSequence) {
-                bond.value = (charSequence.toString())
+    addTextChangedListener(object : TextWatcherAdapter() {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if (bond.value != s) {
+                bond.value = (s.toString())
             }
         }
-    }
+    })
     lifecycle.bind(bond) {
         if (bond.value != text.toString()) {
             this.setText(bond.value)
@@ -68,19 +77,18 @@ inline fun EditText.bindInt(bond: MutableObservableProperty<Int>, format: Number
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
     val originalTextColor = this.textColors.defaultColor
     var value: Int? = null
-    textChangedListener {
-        onTextChanged { charSequence, start, before, count ->
-
+    addTextChangedListener(object : TextWatcherAdapter() {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             value = null
 
             try {
-                value = format.parse(charSequence.toString()).toInt()
+                value = format.parse(s.toString()).toInt()
             } catch(e: ParseException) {
                 //do nothing.
             }
 
             try {
-                value = charSequence.toString().toInt()
+                value = s.toString().toInt()
             } catch(e: NumberFormatException) {
                 //do nothing.
             }
@@ -94,7 +102,7 @@ inline fun EditText.bindInt(bond: MutableObservableProperty<Int>, format: Number
                 }
             }
         }
-    }
+    })
     lifecycle.bind(bond) {
         if (bond.value != value) {
             this.setText(format.format(bond.value))
@@ -110,19 +118,18 @@ inline fun EditText.bindInt(bond: MutableObservableProperty<Int>, format: Number
 inline fun EditText.bindNullableInt(bond: MutableObservableProperty<Int?>, format: NumberFormat = NumberFormat.getNumberInstance()) {
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
     var value: Int? = null
-    textChangedListener {
-        onTextChanged { charSequence, start, before, count ->
-
+    addTextChangedListener(object : TextWatcherAdapter() {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             value = null
-            if (!charSequence.isNullOrBlank()) {
+            if (!s.isNullOrBlank()) {
                 try {
-                    value = format.parse(charSequence.toString()).toInt()
+                    value = format.parse(s.toString()).toInt()
                 } catch(e: ParseException) {
                     //do nothing.
                 }
 
                 try {
-                    value = charSequence.toString().toInt()
+                    value = s.toString().toInt()
                 } catch(e: NumberFormatException) {
                     //do nothing.
                 }
@@ -133,7 +140,7 @@ inline fun EditText.bindNullableInt(bond: MutableObservableProperty<Int?>, forma
                 bond.value = (value)
             }
         }
-    }
+    })
     lifecycle.bind(bond) {
         if (bond.value != value) {
             if (bond.value == null) this.setText("")
@@ -151,20 +158,19 @@ inline fun EditText.bindNullableInt(bond: MutableObservableProperty<Int?>, forma
 inline fun EditText.bindNullableFloat(bond: MutableObservableProperty<Float?>, format: NumberFormat = NumberFormat.getNumberInstance()) {
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
     var value: Float? = null
-    textChangedListener {
-        onTextChanged { charSequence, start, before, count ->
-
+    addTextChangedListener(object : TextWatcherAdapter() {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             value = null
-            if (!charSequence.isNullOrBlank()) {
+            if (!s.isNullOrBlank()) {
 
                 try {
-                    value = format.parse(charSequence.toString()).toFloat()
+                    value = format.parse(s.toString()).toFloat()
                 } catch(e: ParseException) {
                     //do nothing.
                 }
 
                 try {
-                    value = charSequence.toString().toFloat()
+                    value = s.toString().toFloat()
                 } catch(e: NumberFormatException) {
                     //do nothing.
                 }
@@ -176,7 +182,7 @@ inline fun EditText.bindNullableFloat(bond: MutableObservableProperty<Float?>, f
             }
             println("PST value $value obs ${bond.value}")
         }
-    }
+    })
     lifecycle.bind(bond) {
         if (bond.value != value) {
             if (bond.value == null) this.setText("")
@@ -195,20 +201,19 @@ inline fun EditText.bindNullableDouble(bond: MutableObservableProperty<Double?>,
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
     val originalTextColor = this.textColors.defaultColor
     var value: Double? = null
-    textChangedListener {
-        onTextChanged { charSequence, start, before, count ->
-
+    addTextChangedListener(object : TextWatcherAdapter() {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             value = null
 
-            if (!charSequence.isNullOrBlank()) {
+            if (!s.isNullOrBlank()) {
                 try {
-                    value = format.parse(charSequence.toString()).toDouble()
+                    value = format.parse(s.toString()).toDouble()
                 } catch(e: ParseException) {
                     //do nothing.
                 }
 
                 try {
-                    value = charSequence.toString().toDouble()
+                    value = s.toString().toDouble()
                 } catch(e: NumberFormatException) {
                     //do nothing.
                 }
@@ -219,7 +224,8 @@ inline fun EditText.bindNullableDouble(bond: MutableObservableProperty<Double?>,
                 bond.value = (value)
             }
         }
-    }
+    })
+
     lifecycle.bind(bond) {
         if (bond.value != value) {
             if (bond.value == null) this.setText("")
@@ -238,19 +244,18 @@ inline fun EditText.bindFloat(bond: MutableObservableProperty<Float>, format: Nu
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
     val originalTextColor = this.textColors.defaultColor
     var value = Float.NaN
-    textChangedListener {
-        onTextChanged { charSequence, start, before, count ->
-
+    addTextChangedListener(object : TextWatcherAdapter() {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             value = Float.NaN
 
             try {
-                value = format.parse(charSequence.toString()).toFloat()
+                value = format.parse(s.toString()).toFloat()
             } catch(e: ParseException) {
                 //do nothing.
             }
 
             try {
-                value = charSequence.toString().toFloat()
+                value = s.toString().toFloat()
             } catch(e: NumberFormatException) {
                 //do nothing.
             }
@@ -264,7 +269,7 @@ inline fun EditText.bindFloat(bond: MutableObservableProperty<Float>, format: Nu
                 }
             }
         }
-    }
+    })
     lifecycle.bind(bond) {
         if (bond.value != value) {
             this.setText(format.format(bond.value))
@@ -282,19 +287,18 @@ inline fun EditText.bindDouble(bond: MutableObservableProperty<Double>, format: 
     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
     val originalTextColor = this.textColors.defaultColor
     var value = Double.NaN
-    textChangedListener {
-        onTextChanged { charSequence, start, before, count ->
-
+    addTextChangedListener(object : TextWatcherAdapter() {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             value = Double.NaN
 
             try {
-                value = format.parse(charSequence.toString()).toDouble()
+                value = format.parse(s.toString()).toDouble()
             } catch(e: ParseException) {
                 //do nothing.
             }
 
             try {
-                value = charSequence.toString().toDouble()
+                value = s.toString().toDouble()
             } catch(e: NumberFormatException) {
                 //do nothing.
             }
@@ -308,7 +312,7 @@ inline fun EditText.bindDouble(bond: MutableObservableProperty<Double>, format: 
                 }
             }
         }
-    }
+    })
     lifecycle.bind(bond) {
         if (bond.value != value) {
             this.setText(format.format(bond.value))

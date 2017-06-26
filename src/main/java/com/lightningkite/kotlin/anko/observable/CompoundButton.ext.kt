@@ -1,5 +1,6 @@
 package com.lightningkite.kotlin.anko.observable
 
+
 import android.widget.CompoundButton
 import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.observable.list.ObservableList
@@ -7,14 +8,13 @@ import com.lightningkite.kotlin.observable.list.bind
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.ObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
-import org.jetbrains.anko.onCheckedChange
 
 /**
  * Binds this [Switch] two way to the bond.
  */
 @Suppress("NOTHING_TO_INLINE")
 inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean>, crossinline onChange: (Boolean) -> Unit) {
-    this.onCheckedChange {
+    this.setOnCheckedChangeListener {
         buttonView: CompoundButton?, isChecked: Boolean ->
         Unit
         if (isChecked != bond.value) {
@@ -31,7 +31,7 @@ inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean>, 
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun CompoundButton.bindArray(bond: MutableObservableProperty<Array<Boolean>>, index: Int) {
-    this.onCheckedChange {
+    this.setOnCheckedChangeListener {
         buttonView: CompoundButton?, isChecked: Boolean ->
         if (isChecked != bond.value[index]) {
             bond.value[index] = isChecked
@@ -48,7 +48,7 @@ inline fun CompoundButton.bindArray(bond: MutableObservableProperty<Array<Boolea
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean>) {
-    this.onCheckedChange {
+    this.setOnCheckedChangeListener {
         buttonView: CompoundButton?, isChecked: Boolean ->
         if (isChecked != bond.value) {
             bond.value = (isChecked)
@@ -65,7 +65,7 @@ inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean>) 
 @Suppress("NOTHING_TO_INLINE")
 @JvmName("bindBooleanOptional")
 inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean?>, default: Boolean = false) {
-    this.onCheckedChange {
+    this.setOnCheckedChangeListener {
         buttonView: CompoundButton?, isChecked: Boolean ->
         if (isChecked != bond.value) {
             bond.value = (isChecked)
@@ -80,7 +80,7 @@ inline fun CompoundButton.bindBoolean(bond: MutableObservableProperty<Boolean?>,
 }
 
 inline fun CompoundButton.bindList(bond: MutableObservableProperty<MutableList<Boolean>>, index: Int) {
-    this.onCheckedChange {
+    this.setOnCheckedChangeListener {
         buttonView: CompoundButton?, isChecked: Boolean ->
         if (isChecked != bond.value[index]) {
             bond.value[index] = isChecked
@@ -105,7 +105,7 @@ inline fun <T> CompoundButton.bindValue(bond: MutableObservableProperty<T>, valu
     lifecycle.bind(bond) {
         isChecked = value == bond.value
     }
-    onCheckedChange { compoundButton, checked ->
+    setOnCheckedChangeListener { compoundButton: CompoundButton, checked ->
         if (checked && bond.value != value) {
             bond.value = (value)
         }
@@ -122,7 +122,7 @@ inline fun <T, A : T> CompoundButton.bindValue(bond: MutableObservableProperty<T
     lifecycle.bind(bond, otherBond) { currentValue, myValue ->
         isChecked = currentValue == myValue
     }
-    onCheckedChange { compoundButton, checked ->
+    setOnCheckedChangeListener { compoundButton, checked ->
         if (checked && bond.value != otherBond.value) {
             bond.value = (otherBond.value)
         }
@@ -131,7 +131,7 @@ inline fun <T, A : T> CompoundButton.bindValue(bond: MutableObservableProperty<T
 
 
 fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T) {
-    this.onCheckedChange {
+    this.setOnCheckedChangeListener {
         buttonView: CompoundButton?, isChecked: Boolean ->
 
         val index = list.indexOf(item)
@@ -152,7 +152,7 @@ fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T) {
 }
 
 inline fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T, crossinline matches: (T, T) -> Boolean) {
-    this.onCheckedChange {
+    this.setOnCheckedChangeListener {
         buttonView: CompoundButton?, isChecked: Boolean ->
 
         val index = list.indexOfFirst { matches(it, item) }
@@ -173,7 +173,7 @@ inline fun <T> CompoundButton.bindList(list: ObservableList<T>, item: T, crossin
 }
 
 fun <T> CompoundButton.bindList(list: ObservableList<T>, itemObs: ObservableProperty<T>) {
-    this.onCheckedChange {
+    this.setOnCheckedChangeListener {
         buttonView: CompoundButton?, isChecked: Boolean ->
 
         val index = list.indexOf(itemObs.value)
@@ -194,7 +194,7 @@ fun <T> CompoundButton.bindList(list: ObservableList<T>, itemObs: ObservableProp
 }
 
 inline fun <T> CompoundButton.bindList(list: ObservableList<T>, itemObs: ObservableProperty<T>, crossinline matches: (T, T) -> Boolean) {
-    this.onCheckedChange {
+    this.setOnCheckedChangeListener {
         buttonView: CompoundButton?, isChecked: Boolean ->
 
         val index = list.indexOfFirst { matches(it, itemObs.value) }
