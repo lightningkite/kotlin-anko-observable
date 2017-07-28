@@ -8,7 +8,6 @@ import com.lightningkite.kotlin.observable.list.ObservableList
 import com.lightningkite.kotlin.observable.property.MutableObservableProperty
 import com.lightningkite.kotlin.observable.property.ObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
-import org.jetbrains.anko.onItemSelectedListener
 
 /**
  * Binds this [Spinner] two way to the bond.
@@ -35,6 +34,12 @@ inline fun Spinner.bindIndex(bond: MutableObservableProperty<Int>) {
     }
 }
 
+abstract class OnItemSelectedAdapter : AdapterView.OnItemSelectedListener {
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {}
+}
+
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T> Spinner.bindList(bond: MutableObservableProperty<T>, list: List<T>) {
     lifecycle.bind(bond) {
@@ -42,9 +47,9 @@ inline fun <T> Spinner.bindList(bond: MutableObservableProperty<T>, list: List<T
         if (index == -1) return@bind
         setSelection(index)
     }
-    this.onItemSelectedListener {
-        onItemSelected { adapterView, view, index, id ->
-            bond.value = (list[index])
+    onItemSelectedListener = object : OnItemSelectedAdapter() {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            bond.value = (list[position])
         }
     }
 }
@@ -56,9 +61,9 @@ inline fun <T, E> Spinner.bindList(bond: MutableObservableProperty<T>, list: Lis
         if (index == -1) return@bind
         setSelection(index)
     }
-    this.onItemSelectedListener {
-        onItemSelected { adapterView, view, index, id ->
-            bond.value = (conversion(list[index]))
+    onItemSelectedListener = object : OnItemSelectedAdapter() {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            bond.value = (conversion(list[position]))
         }
     }
 }
@@ -71,25 +76,25 @@ inline fun <T> Spinner.bindList(bond: MutableObservableProperty<T>, list: Observ
         if (index == -1) return@bind
         setSelection(index)
     }
-    this.onItemSelectedListener {
-        onItemSelected { adapterView, view, index, id ->
-            bond.value = (list[index])
+    onItemSelectedListener = object : OnItemSelectedAdapter() {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            bond.value = (list[position])
         }
     }
 }
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun <T, E> Spinner.bindList(bond: MutableObservableProperty<T>, list: ObservableList<E>, crossinline conversion: (E) -> T) {
-    this.onItemSelectedListener {
+    onItemSelectedListener = object : OnItemSelectedAdapter() {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            bond.value = (conversion(list[position]))
+        }
+    }
     lifecycle.bind(bond, list.onUpdate) { it, list ->
         val index = list.indexOfFirst { item -> it == conversion(item) }
         if (index == -1) return@bind
         setSelection(index)
     }
-        onItemSelected { adapterView, view, index, id ->
-            bond.value = (conversion(list[index]))
-        }
-}
 }
 
 
@@ -100,9 +105,9 @@ inline fun <T> Spinner.bindList(bond: MutableObservableProperty<T>, listObs: Obs
         if (index == -1) return@bind
         setSelection(index)
     }
-    this.onItemSelectedListener {
-        onItemSelected { adapterView, view, index, id ->
-            bond.value = (listObs.value[index])
+    onItemSelectedListener = object : OnItemSelectedAdapter() {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            bond.value = (listObs.value[position])
         }
     }
 }
@@ -115,9 +120,9 @@ inline fun <T> Spinner.bindListOpt(bond: MutableObservableProperty<T?>, listObs:
         if (index == -1) return@bind
         setSelection(index)
     }
-    this.onItemSelectedListener {
-        onItemSelected { adapterView, view, index, id ->
-            bond.value = (listObs.value[index])
+    onItemSelectedListener = object : OnItemSelectedAdapter() {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            bond.value = (listObs.value[position])
         }
     }
 }

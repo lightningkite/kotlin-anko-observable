@@ -327,7 +327,7 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         }
 
         backgroundResource = selectableItemBackgroundResource
-        onClick {
+        setOnClickListener {
             s.toggle()
         }
 
