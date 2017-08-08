@@ -12,13 +12,13 @@ import com.lightningkite.kotlin.observable.property.StandardObservableProperty
  */
 
 
-inline fun View.hiddenTouchFunctionality(requirements: List<PointF.() -> Boolean>, crossinline action: () -> Unit): ObservableProperty<Int> {
+fun View.hiddenTouchFunctionality(requirements: List<PointF.() -> Boolean>, action: () -> Unit): ObservableProperty<Int> {
     val passwordStageObs = StandardObservableProperty(0)
     val point = PointF()
     setOnTouchListener { view, motionEvent ->
         if (motionEvent.action != MotionEvent.ACTION_DOWN) return@setOnTouchListener false
-        point.x = (motionEvent.x - view.left) / view.width
-        point.y = (motionEvent.y - view.top) / view.height
+        point.x = (motionEvent.x) / view.width
+        point.y = (motionEvent.y) / view.height
         val requirement = requirements[passwordStageObs.value]
         if (requirement(point))
             passwordStageObs.value++
@@ -33,7 +33,7 @@ inline fun View.hiddenTouchFunctionality(requirements: List<PointF.() -> Boolean
     return passwordStageObs
 }
 
-inline fun View.hiddenTouchFunctionality(rightSide: BooleanArray, crossinline action: () -> Unit): ObservableProperty<Int>
+fun View.hiddenTouchFunctionality(rightSide: BooleanArray, action: () -> Unit): ObservableProperty<Int>
         = hiddenTouchFunctionality(
         rightSide.map {
             if (it) {
