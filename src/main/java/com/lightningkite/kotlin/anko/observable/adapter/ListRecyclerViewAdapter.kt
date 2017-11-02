@@ -34,8 +34,6 @@ open class ListRecyclerViewAdapter<T>(
         val makeView: SRVAContext<T>.(ItemObservable<T>) -> Unit
 ) : RecyclerView.Adapter<ListRecyclerViewAdapter.ViewHolder<T>>() {
 
-
-
     var list: List<T> = initialList
         set(value) {
             field = value
@@ -69,7 +67,7 @@ open class ListRecyclerViewAdapter<T>(
         }
         if (list.isNotEmpty()) {
             holder.observable.apply {
-                this.position = position
+                //                this.position = position
                 update()
             }
         }
@@ -81,7 +79,7 @@ open class ListRecyclerViewAdapter<T>(
 
     class ItemObservable<T>(val parent: ListRecyclerViewAdapter<T>) : ObservablePropertyBase<T>() {
         var viewHolder: ViewHolder<T>? = null
-        var position: Int = 0
+        val position get() = viewHolder?.adapterPosition ?: 0
 
         override var value: T
             get() {
@@ -103,7 +101,11 @@ open class ListRecyclerViewAdapter<T>(
         }
     }
 
-    class ViewHolder<T>(val view: View, val observable: ItemObservable<T>) : RecyclerView.ViewHolder(view)
+    class ViewHolder<T>(val view: View, val observable: ItemObservable<T>) : RecyclerView.ViewHolder(view) {
+        init {
+            adapterPosition
+        }
+    }
 
     fun update(position: Int) {
         itemObservables.find { it.position == position }?.update()
