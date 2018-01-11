@@ -57,7 +57,7 @@ open class ListRecyclerViewAdapter<T>(
         val holder = ViewHolder(newView, observable)
         observable.viewHolder = holder
         itemHolders.add(holder)
-        holder.view.lifecycle.setAlwaysOnRecursive() //Necessary because Android is broke
+        holder.view.lifecycle.deferRecursive(parent.lifecycle) //Necessary because Android is broke
         return holder
     }
 
@@ -67,7 +67,7 @@ open class ListRecyclerViewAdapter<T>(
         }
         if (list.isNotEmpty()) {
             holder.observable.apply {
-                //                this.position = position
+                //this.position = position
                 update()
             }
         }
@@ -105,6 +105,8 @@ open class ListRecyclerViewAdapter<T>(
         init {
             adapterPosition
         }
+
+
     }
 
     fun update(position: Int) {
