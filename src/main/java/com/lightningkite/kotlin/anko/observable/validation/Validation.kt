@@ -4,7 +4,7 @@ import android.support.annotation.StringRes
 import android.support.design.widget.TextInputLayout
 import android.widget.TextView
 import com.lightningkite.kotlin.anko.lifecycle
-import com.lightningkite.kotlin.invokeAll
+import com.lightningkite.kotlin.lambda.invokeAll
 import com.lightningkite.kotlin.lifecycle.listen
 import com.lightningkite.kotlin.observable.property.ObservableProperty
 import org.jetbrains.anko.childrenSequence
