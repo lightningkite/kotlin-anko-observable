@@ -11,10 +11,8 @@ import org.jetbrains.anko.childrenSequence
 import java.util.*
 
 /**
- *
- * Created by joseph on 10/4/17.
+ * An extension on an [ObservableProperty] which evaluates if the value is valid when asked.
  */
-
 class Validation<T>(
         val observableProperty: ObservableProperty<T>,
         val getError: Validation<T>.(T) -> StringFetcher?
@@ -36,6 +34,10 @@ class Validation<T>(
 
 
 private val ObservableProperty_Validation = WeakHashMap<ObservableProperty<*>, Validation<*>>()
+
+/**
+ * Gets or sets the validation attached to the observable.
+ */
 @Suppress("UNCHECKED_CAST")
 var <T> ObservableProperty<T>.validation: Validation<T>?
     get() = ObservableProperty_Validation[this] as? Validation<T>
@@ -44,11 +46,17 @@ var <T> ObservableProperty<T>.validation: Validation<T>?
     }
 
 
+/**
+ * Adds a validation to the observable.
+ */
 fun <T, P : ObservableProperty<T>> P.withValidation(getError: Validation<T>.(T) -> StringFetcher?): P {
     validation = Validation(this, getError)
     return this
 }
 
+/**
+ * Binds a [TextView] to the error that validation of [observableProperty] reports.
+ */
 fun TextView.bindError(observableProperty: ObservableProperty<*>) {
     lifecycle.listen(observableProperty.validation!!.onCheck) { errorFetcher ->
         error = errorFetcher?.invoke(resources)
@@ -58,6 +66,9 @@ fun TextView.bindError(observableProperty: ObservableProperty<*>) {
     }
 }
 
+/**
+ * Binds a [TextInputLayout] to the error that validation of [observableProperty] reports.
+ */
 fun TextInputLayout.bindError(observableProperty: ObservableProperty<*>) {
     lifecycle.listen(observableProperty.validation!!.onCheck) { errorFetcher ->
         error = errorFetcher?.invoke(resources)

@@ -5,10 +5,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.lightningkite.kotlin.anko.lifecycle
-import com.lightningkite.kotlin.lifecycle.listen
 import com.lightningkite.kotlin.observable.list.ObservableList
+import com.lightningkite.kotlin.observable.property.BaseObservableProperty
 import com.lightningkite.kotlin.observable.property.ObservableProperty
-import com.lightningkite.kotlin.observable.property.ObservablePropertyBase
+import com.lightningkite.kotlin.observable.property.listen
 import org.jetbrains.anko.AnkoContextImpl
 import java.util.*
 
@@ -77,10 +77,11 @@ open class ListRecyclerViewAdapter<T>(
     val itemHolders = ArrayList<ViewHolder<T>>()
     val itemObservables = ArrayList<ItemObservable<T>>()
 
-    class ItemObservable<T>(val parent: ListRecyclerViewAdapter<T>) : ObservablePropertyBase<T>() {
+    class ItemObservable<T>(val parent: ListRecyclerViewAdapter<T>) : BaseObservableProperty<T>() {
         var viewHolder: ViewHolder<T>? = null
         val position get() = viewHolder?.adapterPosition ?: 0
 
+        @Suppress("UNCHECKED_CAST")
         override var value: T
             get() {
                 if (position >= 0 && position < parent.list.size) {
@@ -126,27 +127,35 @@ open class ListRecyclerViewAdapter<T>(
     }
 }
 
-inline fun <T> RecyclerView.listAdapter(
+/**
+ * Makes a [RecyclerView.Adapter] displaying the given [list].
+ */
+fun <T> RecyclerView.listAdapter(
         list: List<T>,
-        noinline makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
+        makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
 ): ListRecyclerViewAdapter<T> {
     val newAdapter = ListRecyclerViewAdapter(context, list, makeView)
     return newAdapter
 }
 
-inline fun <T> RecyclerView.listAdapter(
+/**
+ * Makes a [RecyclerView.Adapter] displaying the given [list], animating changes.
+ */
+fun <T> RecyclerView.listAdapter(
         list: ObservableList<T>,
-        noinline makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
+        makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
 ): ListRecyclerViewAdapter<T> {
     val newAdapter = ListRecyclerViewAdapter(context, list, makeView)
     newAdapter.attachAnimations(lifecycle, list)
     return newAdapter
 }
 
-
-inline fun <T> RecyclerView.listAdapterObservable(
+/**
+ * Makes a [RecyclerView.Adapter] displaying the list in [listObs], animating updates.
+ */
+fun <T> RecyclerView.listAdapterObservable(
         listObs: ObservableProperty<List<T>>,
-        noinline makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
+        makeView: ListRecyclerViewAdapter.SRVAContext<T>.(ListRecyclerViewAdapter.ItemObservable<T>) -> Unit
 ): ListRecyclerViewAdapter<T> {
     val newAdapter = ListRecyclerViewAdapter(context, listObs.value, makeView)
     lifecycle.listen(listObs) {

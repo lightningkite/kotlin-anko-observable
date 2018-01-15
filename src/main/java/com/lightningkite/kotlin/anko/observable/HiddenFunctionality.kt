@@ -8,10 +8,7 @@ import com.lightningkite.kotlin.observable.property.StandardObservableProperty
 
 /**
  * Allows you to add in "secret codes" to views.
- * Created by joseph on 3/16/17.
  */
-
-
 fun View.hiddenTouchFunctionality(requirements: List<PointF.() -> Boolean>, action: () -> Unit): ObservableProperty<Int> {
     val passwordStageObs = StandardObservableProperty(0)
     val point = PointF()
@@ -33,6 +30,10 @@ fun View.hiddenTouchFunctionality(requirements: List<PointF.() -> Boolean>, acti
     return passwordStageObs
 }
 
+/**
+ * Allows you to add in "secret codes" to views.
+ * The user must tapped
+ */
 fun View.hiddenTouchFunctionality(rightSide: BooleanArray, action: () -> Unit): ObservableProperty<Int>
         = hiddenTouchFunctionality(
         rightSide.map {

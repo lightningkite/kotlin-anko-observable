@@ -35,7 +35,7 @@ inline fun CompoundButton.bindArray(bond: MutableObservableProperty<Array<Boolea
         buttonView: CompoundButton?, isChecked: Boolean ->
         if (isChecked != bond.value[index]) {
             bond.value[index] = isChecked
-            bond.update()
+            bond.value = bond.value
         }
     }
     lifecycle.bind(bond) {
@@ -84,7 +84,7 @@ inline fun CompoundButton.bindList(bond: MutableObservableProperty<MutableList<B
         buttonView: CompoundButton?, isChecked: Boolean ->
         if (isChecked != bond.value[index]) {
             bond.value[index] = isChecked
-            bond.update()
+            bond.value = bond.value
         }
     }
     lifecycle.bind(bond) {

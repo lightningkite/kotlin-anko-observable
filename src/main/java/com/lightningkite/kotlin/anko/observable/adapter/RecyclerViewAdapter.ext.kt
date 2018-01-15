@@ -10,8 +10,10 @@ import com.lightningkite.kotlin.observable.list.removeListenerSet
 import java.util.*
 
 /**
+ * Tools for attaching animations, used internally mostly.
  * Created by joseph on 9/20/16.
  */
+
 val previousListenerSet: WeakHashMap<RecyclerView.Adapter<*>, Pair<ObservableList<*>, ObservableListListenerSet<*>>> = WeakHashMap()
 
 fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimations(list: ObservableList<ITEM>) {
@@ -37,43 +39,6 @@ fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimatio
     list.addListenerSet(newSet.second)
 }
 
-@Suppress("UNCHECKED_CAST")
-fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimationsMin1(list: ObservableList<ITEM>) {
-    detatchAnimations<ITEM, VH>()
-    var knownCount = list.size
-    val newSet = list to ObservableListListenerSet(
-            onAddListener = { item: ITEM, position: Int ->
-                knownCount++
-                if (knownCount == 1) {
-                    notifyItemChanged(position)
-                } else {
-                    notifyItemInserted(position)
-                }
-            },
-            onRemoveListener = { item: ITEM, position: Int ->
-                //ensures there is always at least one element shown
-                knownCount--
-                if (knownCount == 0) {
-                    notifyItemChanged(position)
-                } else {
-                    notifyItemRemoved(position)
-                }
-            },
-            onChangeListener = { oldItem: ITEM, item: ITEM, position: Int ->
-                notifyItemChanged(position)
-            },
-            onMoveListener = { item: ITEM, oldPosition: Int, position: Int ->
-                notifyItemMoved(oldPosition, position)
-            },
-            onReplaceListener = { list: ObservableList<ITEM> ->
-                knownCount = list.size
-                notifyDataSetChanged()
-            }
-    )
-    previousListenerSet[this] = newSet
-    list.addListenerSet(newSet.second)
-}
-
 @Suppress("UNCHECKED_CASt")
 fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.detatchAnimations() {
     val prev = previousListenerSet[this]
@@ -87,18 +52,6 @@ fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimatio
     lifecycle.connect(object : LifecycleListener {
         override fun onStart() {
             attachAnimations<ITEM, VH>(list)
-        }
-
-        override fun onStop() {
-            detatchAnimations<ITEM, VH>()
-        }
-    })
-}
-
-fun <ITEM, VH : RecyclerView.ViewHolder> RecyclerView.Adapter<VH>.attachAnimationsMin1(lifecycle: LifecycleConnectable, list: ObservableList<ITEM>) {
-    lifecycle.connect(object : LifecycleListener {
-        override fun onStart() {
-            attachAnimationsMin1<ITEM, VH>(list)
         }
 
         override fun onStop() {

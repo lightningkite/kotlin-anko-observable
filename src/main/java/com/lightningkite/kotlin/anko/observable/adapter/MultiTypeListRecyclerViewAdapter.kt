@@ -5,10 +5,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.lightningkite.kotlin.anko.lifecycle
-import com.lightningkite.kotlin.lifecycle.listen
 import com.lightningkite.kotlin.observable.list.ObservableList
+import com.lightningkite.kotlin.observable.property.BaseObservableProperty
 import com.lightningkite.kotlin.observable.property.ObservableProperty
-import com.lightningkite.kotlin.observable.property.ObservablePropertyBase
+import com.lightningkite.kotlin.observable.property.listen
 import org.jetbrains.anko.AnkoContextImpl
 import org.jetbrains.anko.frameLayout
 import java.util.*
@@ -77,7 +77,7 @@ class MultiTypeListRecyclerViewAdapter<T : Any>(
 
     val itemObservables = ArrayList<ItemObservable<T>>()
 
-    class ItemObservable<T : Any>(val parent: MultiTypeListRecyclerViewAdapter<T>) : ObservablePropertyBase<T>() {
+    class ItemObservable<T : Any>(val parent: MultiTypeListRecyclerViewAdapter<T>) : BaseObservableProperty<T>() {
         var viewHolder: MultiTypeListRecyclerViewAdapter.ViewHolder<T>? = null
         var position: Int = 0
 
@@ -123,8 +123,11 @@ class MultiTypeListRecyclerViewAdapter<T : Any>(
     }
 }
 
-
-inline fun <T : Any> RecyclerView.multiTypeListAdapter(
+/**
+ * Makes a [RecyclerView.Adapter] displaying the given [list], where the type of item in the list is
+ * matched up with a view generator from [makeViews].
+ */
+fun <T : Any> RecyclerView.multiTypeListAdapter(
         list: List<T>,
         makeViews: Map<Class<out T>, MultiTypeListRecyclerViewAdapter.SRVAContext<T>.(MultiTypeListRecyclerViewAdapter.ItemObservable<T>) -> Unit>
 ): MultiTypeListRecyclerViewAdapter<T> {
@@ -132,7 +135,12 @@ inline fun <T : Any> RecyclerView.multiTypeListAdapter(
     return newAdapter
 }
 
-inline fun <T : Any> RecyclerView.multiTypeListAdapter(
+/**
+ * Makes a [RecyclerView.Adapter] displaying the given [list], where the type of item in the list is
+ * matched up with a view generator from [makeViews].
+ * Animates to show updates to the list.
+ */
+fun <T : Any> RecyclerView.multiTypeListAdapter(
         list: ObservableList<T>,
         makeViews: Map<Class<out T>, MultiTypeListRecyclerViewAdapter.SRVAContext<T>.(MultiTypeListRecyclerViewAdapter.ItemObservable<T>) -> Unit>
 ): MultiTypeListRecyclerViewAdapter<T> {
@@ -141,7 +149,12 @@ inline fun <T : Any> RecyclerView.multiTypeListAdapter(
     return newAdapter
 }
 
-inline fun <T : Any> RecyclerView.multiTypeListAdapterObservable(
+/**
+ * Makes a [RecyclerView.Adapter] displaying the given [listObs], where the type of item in the list is
+ * matched up with a view generator from [makeViews].
+ * Animates to show updates to the list.
+ */
+fun <T : Any> RecyclerView.multiTypeListAdapterObservable(
         listObs: ObservableProperty<List<T>>,
         makeViews: Map<Class<out T>, MultiTypeListRecyclerViewAdapter.SRVAContext<T>.(MultiTypeListRecyclerViewAdapter.ItemObservable<T>) -> Unit>
 ): MultiTypeListRecyclerViewAdapter<T> {

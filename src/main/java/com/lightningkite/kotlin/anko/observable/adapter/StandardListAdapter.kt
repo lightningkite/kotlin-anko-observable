@@ -6,18 +6,15 @@ import android.view.ViewGroup
 import android.widget.*
 import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.anko.observable.OnItemSelectedAdapter
-import com.lightningkite.kotlin.lifecycle.listen
 import com.lightningkite.kotlin.observable.list.ObservableList
-import com.lightningkite.kotlin.observable.property.MutableObservableProperty
-import com.lightningkite.kotlin.observable.property.ObservableProperty
-import com.lightningkite.kotlin.observable.property.StandardObservableProperty
-import com.lightningkite.kotlin.observable.property.bind
+import com.lightningkite.kotlin.observable.property.*
 import org.jetbrains.anko.AnkoContextImpl
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.wrapContent
 import java.util.*
 
 /**
+ * A [BaseAdapter] made more convenient.
  * Created by josep on 1/24/2016.
  */
 open class StandardListAdapter<T>(
@@ -76,39 +73,24 @@ open class StandardListAdapter<T>(
     }
 }
 
-inline fun <T> ListView.standardAdapter(
+/**
+ * Sets an adapter that displays the current values in [list].
+ */
+fun <T> Spinner.standardAdapter(
         list: List<T>,
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
 ): StandardListAdapter<T> {
     val newAdapter = StandardListAdapter(context, list, makeView)
     adapter = newAdapter
     return newAdapter
 }
 
-inline fun <T> ListView.standardAdapter(
-        list: ObservableList<T>,
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
-): StandardListAdapter<T> {
-    val newAdapter: StandardListAdapter<T> = StandardListAdapter(context, list, makeView)
-    adapter = newAdapter
-    lifecycle.listen(list.onUpdate) {
-        newAdapter.notifyDataSetChanged()
-    }
-    return newAdapter
-}
-
-inline fun <T> Spinner.standardAdapter(
-        list: List<T>,
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
-): StandardListAdapter<T> {
-    val newAdapter = StandardListAdapter(context, list, makeView)
-    adapter = newAdapter
-    return newAdapter
-}
-
-inline fun <T> Spinner.standardAdapter(
+/**
+ * Sets an adapter that displays the values in [listObs], updating when it changes.
+ */
+fun <T> Spinner.standardAdapter(
         listObs: ObservableProperty<List<T>>,
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
 ): StandardListAdapter<T> {
     val newAdapter: StandardListAdapter<T> = StandardListAdapter(context, listObs.value, makeView)
     adapter = newAdapter
@@ -118,9 +100,12 @@ inline fun <T> Spinner.standardAdapter(
     return newAdapter
 }
 
-inline fun <T> Spinner.standardAdapter(
+/**
+ * Sets an adapter that displays the values in [list].
+ */
+fun <T> Spinner.standardAdapter(
         list: ObservableList<T>,
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
 ): StandardListAdapter<T> {
     val newAdapter: StandardListAdapter<T> = StandardListAdapter(context, list, makeView)
     adapter = newAdapter
@@ -130,10 +115,15 @@ inline fun <T> Spinner.standardAdapter(
     return newAdapter
 }
 
-inline fun <T> Spinner.standardAdapter(
+/**
+ * Sets an adapter that displays the values in [list].
+ * When the user selects an object, it will be updated into [selected].
+ * If [selected] is updated externally, the view will update accordingly.
+ */
+fun <T> Spinner.standardAdapter(
         list: ObservableList<T>,
         selected: MutableObservableProperty<T>,
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
 ): StandardListAdapter<T> {
     val newAdapter: StandardListAdapter<T> = StandardListAdapter(context, list, makeView)
     adapter = newAdapter
@@ -177,10 +167,16 @@ inline fun <T> Spinner.standardAdapter(
     return newAdapter
 }
 
-inline fun <T> Spinner.standardAdapter(
+
+/**
+ * Sets an adapter that displays the values in [list].
+ * When the user selects an object, it will be updated into [selected].
+ * If [selected] is updated externally, the view will update accordingly.
+ */
+fun <T> Spinner.standardAdapter(
         list: List<T>,
         selected: MutableObservableProperty<T>,
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
 ): StandardListAdapter<T> {
     val newAdapter: StandardListAdapter<T> = StandardListAdapter(context, list, makeView)
     adapter = newAdapter
@@ -212,6 +208,7 @@ inline fun <T> Spinner.standardAdapter(
     return newAdapter
 }
 
+@Suppress("UNCHECKED_CAST")
 class FilterableStandardListAdapter<T>(
         context: Context,
         val fullList: List<T>,
@@ -255,20 +252,27 @@ class FilterableStandardListAdapter<T>(
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View? = getView(position, convertView, parent)
 }
 
-inline fun <T> AutoCompleteTextView.standardAdapter(
+
+/**
+ * Sets an adapter that displays the values in [list].
+ */
+fun <T> AutoCompleteTextView.standardAdapter(
         list: List<T>,
-        noinline convertToString: (T) -> String = { it.toString() },
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+        convertToString: (T) -> String = { it.toString() },
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
 ): FilterableStandardListAdapter<T> {
     val newAdapter = FilterableStandardListAdapter(context, list, convertToString, makeView = makeView)
     setAdapter(newAdapter)
     return newAdapter
 }
 
-inline fun <T> AutoCompleteTextView.standardAdapter(
+/**
+ * Sets an adapter that displays the values in [listObs].
+ */
+fun <T> AutoCompleteTextView.standardAdapter(
         listObs: ObservableProperty<List<T>>,
-        noinline convertToString: (T) -> String = { it.toString() },
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+        convertToString: (T) -> String = { it.toString() },
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
 ): FilterableStandardListAdapter<T> {
     val newAdapter = FilterableStandardListAdapter(context, listObs.value, convertToString, makeView = makeView)
     setAdapter(newAdapter)
@@ -278,10 +282,13 @@ inline fun <T> AutoCompleteTextView.standardAdapter(
     return newAdapter
 }
 
-inline fun <T> AutoCompleteTextView.standardAdapter(
+/**
+ * Sets an adapter that displays the values in [list].
+ */
+fun <T> AutoCompleteTextView.standardAdapter(
         list: ObservableList<T>,
-        noinline convertToString: (T) -> String = { it.toString() },
-        noinline makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
+        convertToString: (T) -> String = { it.toString() },
+        makeView: StandardListAdapter.SLVAContext<T>.(StandardListAdapter.ItemObservable<T>) -> Unit
 ): FilterableStandardListAdapter<T> {
     val newAdapter = FilterableStandardListAdapter(context, list, convertToString, makeView = makeView)
     setAdapter(newAdapter)
