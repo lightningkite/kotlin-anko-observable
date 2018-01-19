@@ -3,19 +3,19 @@ package com.lightningkite.kotlin.anko.observable
 import android.view.View
 import com.lightningkite.kotlin.anko.animation.TypedValueAnimator
 import com.lightningkite.kotlin.anko.lifecycle
-import com.lightningkite.kotlin.anko.measureDesiredHeight
+import com.lightningkite.kotlin.anko.measureDesiredSize
 import com.lightningkite.kotlin.anko.requestLayoutSafe
-import com.lightningkite.kotlin.lifecycle.listen
 import com.lightningkite.kotlin.observable.property.ObservableProperty
+import com.lightningkite.kotlin.observable.property.listen
 import org.jetbrains.anko.wrapContent
 
 
-inline fun <T : View> T.expanding(expandedObs: ObservableProperty<Boolean>): T {
+fun <T : View> T.expanding(expandedObs: ObservableProperty<Boolean>): T {
     var lastSize = 0
     lifecycle.listen(expandedObs) {
         val final = if (it) {
             if (layoutParams.height == wrapContent) return@listen
-            measureDesiredHeight()
+            measureDesiredSize().y
         } else {
             if (layoutParams.height == 0) return@listen
             0
