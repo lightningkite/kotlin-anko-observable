@@ -9,6 +9,37 @@ import com.lightningkite.kotlin.observable.property.ObservableProperty
 import com.lightningkite.kotlin.observable.property.StackObservableProperty
 import com.lightningkite.kotlin.observable.property.bind
 
+fun <T : (ActivityAccess) -> View> SwapView.bind(
+        access: ActivityAccess,
+        observable: ObservableProperty<T>,
+        getAnimation: (T) -> AnimationSet = { AnimationSet.fade }
+) {
+    lifecycle.bind(observable) {
+        swap(it.invoke(access), getAnimation(it))
+    }
+}
+
+fun <T : (ActivityAccess) -> View> SwapView.bind(
+        access: ActivityAccess,
+        observable: StackObservableProperty<T>,
+        pushAnimationSet: AnimationSet = AnimationSet.slidePush,
+        neutralAnimationSet: AnimationSet = AnimationSet.fade,
+        popAnimationSet: AnimationSet = AnimationSet.slidePop
+) {
+    var previousSize = observable.stack.size
+    bind(
+            access = access,
+            observable = observable,
+            getAnimation = {
+                val diff = observable.stack.size - previousSize
+                previousSize = observable.stack.size
+                if (diff > 0) pushAnimationSet
+                else if (diff < 0) popAnimationSet
+                else neutralAnimationSet
+            }
+    )
+}
+
 fun <T> SwapView.bindRenderMap(
         access: ActivityAccess,
         observable: ObservableProperty<T>,
