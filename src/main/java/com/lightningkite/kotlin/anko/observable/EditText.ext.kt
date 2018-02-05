@@ -55,14 +55,15 @@ inline fun EditText.bindNullableString(bond: MutableObservableProperty<String?>)
     setText(bond.value)
     addTextChangedListener(object : TextWatcherAdapter() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            if (bond.value != s) {
-                bond.value = (s.toString())
+            val converted = s?.takeIf { it.isNotBlank() }?.toString()
+            if (bond.value != converted) {
+                bond.value = (converted)
             }
         }
     })
     lifecycle.bind(bond) {
-        if (bond.value != text.toString()) {
-            this.setText(bond.value)
+        if (it != text.toString()) {
+            this.setText(it)
         }
     }
 }

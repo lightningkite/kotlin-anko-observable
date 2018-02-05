@@ -188,6 +188,14 @@ class FormLayout(ctx: Context) : _LinearLayout(ctx) {
         }
     }
 
+    inline fun ViewGroup.fieldNullableString(obs: MutableObservableProperty<String?>, hint: Int, type: Int, crossinline setup: EditText.() -> Unit): View {
+        return makeTextField(hint) {
+            bindNullableString(obs)
+            inputType = type
+            setup()
+        }
+    }
+
     inline fun ViewGroup.fieldString(
             obs: MutableObservableProperty<String>,
             hint: Int,
