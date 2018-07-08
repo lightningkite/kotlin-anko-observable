@@ -48,9 +48,9 @@ open class StandardListAdapter<T>(
         val item = list[position]
         if (convertView == null) {
             val newObs = ItemObservable(list[position])
+            newObs.index = position
             val newView = SLVAContext(this, context).apply { makeView(newObs) }.view
             newView.tag = newObs
-            newObs.index = position
             newView.layoutParams = AbsListView.LayoutParams(matchParent, wrapContent)
             return newView
         } else {
